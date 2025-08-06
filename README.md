@@ -40,8 +40,8 @@ A linguagem Quokka oferece uma base sólida para desenvolvimento de aplicações
 - **Scripts de automação básica**
 
 Para projetos mais complexos, considere as limitações conhecidas e avalie se Quokka atende às necessidades específicas do seu projeto. 
-Quokka ainda é uma linguagem em desenvolvimento, portanto features gerais mais avançadas serão adicionadas no futuro de acordo com a fila de prioridade.
+*Quokka ainda é uma linguagem em desenvolvimento, portanto features gerais mais avançadas serão adicionadas no futuro de acordo com a fila de prioridade.*
 
 ---
 
-**Documentação da Linguagem Quokka v0.9**  
+***para mais informações, cheque a **[Documentação oficial da Linguagem Quokka v0.9](#documentation.md)***  
