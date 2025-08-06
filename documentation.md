@@ -335,7 +335,7 @@ processar.dados()
 resultado = calcular.imc(70, 1.75)
 print("IMC: " + resultado)
 
-# Função com parâmetros
+# Função retornando resultado diretamente
 valor = somar(10, 20)
 ```
 
@@ -343,8 +343,8 @@ valor = somar(10, 20)
 
 ```quokka
 fun exemploParametros(obrigatorio, opcional){
-    if(opcional == null){
-        opcional = "valor padrão"
+    if(opcional == null || opcional == 0){
+        obrigatório = "valor padrão"
     }
     
     print("Obrigatório: " + obrigatorio)
@@ -366,9 +366,10 @@ fun semRetorno(){
 
 fun comRetorno(x){
     resultado = x * 2
-    yield(resultado)  # Retorno explícito
+    yield(resultado)  # Retorno explícito do resultado
 }
 ```
+A função yield() deve ter como parâmetro a variável que será retornada como valor da função
 
 ### Escopo de Funções
 

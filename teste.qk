@@ -1,6 +1,6 @@
 fun somar(a, b){
-    resultado = a + b
-    yield(t)  # ← Retorna o valor de 'resultado'
+    soma = a + b
+    yield()
 }
 
 main{
