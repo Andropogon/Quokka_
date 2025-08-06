@@ -4,21 +4,21 @@
 
 ## Índice
 
-1. [Introdução](#introdução)
-2. [Sintaxe Básica](#sintaxe-básica)
-3. [Tipos de Dados](#tipos-de-dados)
-4. [Estrutura do Programa](#estrutura-do-programa)
-5. [Variáveis e Escopo](#variáveis-e-escopo)
-6. [Operadores](#operadores)
-7. [Estruturas de Controle](#estruturas-de-controle)
-8. [Funções](#funções)
-9. [Estruturas de Dados](#estruturas-de-dados)
-10. [Sistema de Entrada de Dados](#sistema-de-entrada-de-dados)
-11. [Comandos Especiais](#comandos-especiais)
-12. [Tratamento de Erros](#tratamento-de-erros)
-13. [Exemplos Práticos](#exemplos-práticos)
-14. [Boas Práticas](#boas-práticas)
-15. [Limitações Conhecidas](#limitações-conhecidas)
+2. [Introdução](#introdução)
+3. [Sintaxe Básica](#sintaxe-básica)
+4. [Tipos de Dados](#tipos-de-dados)
+5. [Estrutura do Programa](#estrutura-do-programa)
+6. [Variáveis e Escopo](#variáveis-e-escopo)
+7. [Operadores](#operadores)
+8. [Estruturas de Controle](#estruturas-de-controle)
+9. [Funções](#funções)
+10. [Estruturas de Dados](#estruturas-de-dados)
+11. [Sistema de Entrada de Dados](#sistema-de-entrada-de-dados)
+12. [Comandos Especiais](#comandos-especiais)
+13. [Tratamento de Erros](#tratamento-de-erros)
+14. [Exemplos Práticos](#exemplos-práticos)
+15. [Boas Práticas](#boas-práticas)
+16. [Limitações Conhecidas](#limitações-conhecidas)
 
 ---
 
@@ -26,18 +26,23 @@
 
 ### Comentários
 
+comentários são linhas do código que são ignoradas pelo computador e geralmente servem para descrever a funcionalidade de um código
+
 ```quokka
 # Este é um comentário de linha
 print("Hello World")  # Comentário no final da linha
+# A função acima escreve "Hello World"
 ```
 
 ### Convenções de Nomenclatura
 
-- **Variáveis:** `minhaVariavel`, `contador`, `nome_usuario`
+- **Variáveis:** *placeholder de valor mutável - letra minúscula* - `minhaVariavel`, `contador`, `nome_usuario`
 - **Funções:** `minhaFuncao`, `calcular.imc`, `processar_dados`
-- **Constantes:** `VALOR_MAXIMO`, `PI`
+- **Constantes:** *variável com valor definido que não se altera durante o código - letra maiúscula* - `VALOR_MAXIMO`, `PI`
 
 ### Delimitadores
+
+são os símbolos usados para *delimitar* pedaços do código e isolar certos dados ou parâmetros
 
 - **Blocos:** `{` e `}`
 - **Parâmetros:** `(` e `)`
@@ -67,8 +72,8 @@ nome = "João Silva"
 mensagem = "Bem-vindo ao Quokka!"
 
 # Escape de caracteres
-texto = "Linha 1\nLinha 2\tTabulação"
-aspas = "Ele disse: \"Olá!\""
+texto = "Linha 1\nLinha 2" # \n quebra linha
+aspas = "Ele disse: \"Olá!\"" # \"Olá!\" será escrito "Olá" e não Olá 
 ```
 
 ### Conversão de Tipos
@@ -90,18 +95,18 @@ Um programa Quokka possui três seções principais:
 ### 1. Bloco Global
 
 ```quokka
-global{
-    # Declaração de variáveis globais
-    contador = 0
-    nome = null
-    configuracao = { 'debug' = true . 'versao' = "1.0" }
+global{ # Declaração de variáveis globais
+    contador = 0 # variável de valor 0
+    nome = null # variável sem valor definido
+    configuracao = { 'debug' = true . 'versao' = "1.0" } # dicionário simples com duas chaves
 }
 ```
+As variáveis definidas no bloco global{} podem ser chamadas ao decorrer de todo o código
 
 ### 2. Definições de Função
 
 ```quokka
-fun minhaFuncao(parametro1, parametro2){
+fun minhaFuncao(parametro1, parametro2){ 
     # Corpo da função
     resultado = parametro1 + parametro2
     yield(resultado)
@@ -111,8 +116,8 @@ fun minhaFuncao(parametro1, parametro2){
 ### 3. Bloco Main
 
 ```quokka
-main{
-    # Código principal do programa
+main{ 
+    # Código principal do programa. Todo o código que será executado deve estar contido em 'main'
     print("Iniciando programa...")
     minhaFuncao(10, 20)
 }
@@ -161,8 +166,8 @@ idade = 25
 nome = "Maria"
 
 # Atribuição a elementos de estruturas
-pessoas[0] = "João"
-dados{'nome'} = "Pedro"
+pessoas[0] = "João" # elemento 0 do array 'pessoas' é "João"
+dados{'nome'} = "Pedro" # elemento 'nome' no dicionário 'dados' vale "Pedro"
 ```
 
 ---
@@ -222,7 +227,7 @@ dados{'nome'} = "Pedro"
 #### if simples
 
 ```quokka
-if(idade >= 18){
+if(idade >= 18){ # condição para executar instrução
     print("Maior de idade")
 }
 ```
@@ -233,29 +238,25 @@ if(idade >= 18){
 if(nota >= 7){
     print("Aprovado")
 }
-else{
+else{ # intrução a ser realizada se a condição estabelecida não se aplicar
     print("Reprovado")
 }
 ```
 
-#### if-else aninhado (equivalente a else if)
+#### else if 
 
 ```quokka
 if(nota >= 9){
     print("Excelente")
 }
+else if(nota >= 7){
+    print("Bom")
+} 
+else if(nota >= 5){
+    print("Regular")
+}
 else{
-    if(nota >= 7){
-        print("Bom")
-    }
-    else{
-        if(nota >= 5){
-            print("Regular")
-        }
-        else{
-            print("Insuficiente")
-        }
-    }
+    print("Insuficiente")
 }
 ```
 
@@ -265,7 +266,7 @@ else{
 
 ```quokka
 contador = 0
-while(contador < 10){
+while(contador < 10){ # enquanto a condição for verdadeira, a intrução é executada
     print("Contador: " + contador)
     contador = contador + 1
 }
@@ -276,8 +277,8 @@ while(contador < 10){
 ```quokka
 numeros = { 10 . 20 . 30 . 40 }
 
-each($numeros : numero){
-    print("Número: " + numero)
+each($numeros : numero){ # a variável 'numero' representa o elemento do array 'numeros' da vez
+    print("Número: " + numero) # escreve "Número" mais o número representado por 'numero' na vez
 }
 ```
 
@@ -303,10 +304,10 @@ while(continuar == true){
 ### Definição de Função
 
 ```quokka
-fun nomeDaFuncao(parametro1, parametro2){
+fun nomeDaFuncao(parametro1, parametro2){ # 'fun' declara função, seguido pelo seu nome e os parâmetros entre ()
     # Corpo da função
     resultado = parametro1 + parametro2
-    yield(resultado)  # Retorna valor
+    yield(resultado)  # Retorna valor. O nome da função agora pode ser chamado como uma variável que contém o valor calculado pela função
 }
 ```
 
@@ -322,6 +323,7 @@ fun processar.dados(){
     print("Processando...")
 }
 ```
+
 
 ### Chamada de Função
 

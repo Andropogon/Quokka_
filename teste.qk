@@ -1,3 +1,9 @@
+fun somar(a, b){
+    resultado = a + b
+    yield(t)  # ← Retorna o valor de 'resultado'
+}
+
 main{
-    print("oi")
+    soma = somar(10, 20)  # soma recebe 30
+    print("Soma: " + soma)
 }
