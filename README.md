@@ -1,9 +1,10 @@
 # Quokka
-Quokka language v0.4 interpreter
+Quokka language v0.9
 
 **Versão:** 0.9 
+**Versão do interpretador:** 6.0
 **Data:** Agosto 2025  
-**Autores:** Equipe de Desenvolvimento Quokka
+**Autores:** Lucas da Roza Cardoso
 
 
 ## Introdução
@@ -28,7 +29,7 @@ Quokka language v0.4 interpreter
 
 ---
 
-## Conclusão
+### Usos
 
 A linguagem Quokka oferece uma base sólida para desenvolvimento de aplicações interativas simples a médias. Sua sintaxe clara e recursos integrados tornam-na ideal para:
 
@@ -38,9 +39,9 @@ A linguagem Quokka oferece uma base sólida para desenvolvimento de aplicações
 - **Jogos de texto**
 - **Scripts de automação básica**
 
-Para projetos mais complexos, considere as limitações conhecidas e avalie se Quokka atende às necessidades específicas do seu projeto.
+Para projetos mais complexos, considere as limitações conhecidas e avalie se Quokka atende às necessidades específicas do seu projeto. 
+Quokka ainda é uma linguagem em desenvolvimento, portanto features gerais mais avançadas serão adicionadas no futuro de acordo com a fila de prioridade.
 
 ---
 
 **Documentação da Linguagem Quokka v0.9**  
-*Para mais informações e atualizações, consulte o repositório oficial.*
