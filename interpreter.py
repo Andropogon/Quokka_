@@ -929,76 +929,76 @@ class QuokkaInterpreter:
         loop_count = 0
         max_loops = 10000  # Proteção contra loop infinito
 
-    try:
-        while loop_count < max_loops:
-            loop_count += 1
+        try:
+            while loop_count < max_loops:
+                loop_count += 1
             
             # Re-avalia a condição
-            self.current = condition_start
-            condition = self._parse_expression()
+                self.current = condition_start
+                condition = self._parse_expression()
             
             # Debug opcional
-            if hasattr(self, 'debug_mode') and self.debug_mode:
-                print(f"[DEBUG] While loop {loop_count}: condição = {condition}")
+                if hasattr(self, 'debug_mode') and self.debug_mode:
+                    print(f"[DEBUG] While loop {loop_count}: condição = {condition}")
             
             # Se condição é falsa, sai do loop
-            if not self._is_truthy(condition):
-                break
+                if not self._is_truthy(condition):
+                    break
             
             # Executa o corpo do while com controle de break/continue
-            try:
-                def execute_while_body():
+                try:
+                    def execute_while_body():
                     # Extrai o corpo do while
-                    while_body = self.tokens[body_start:body_end]
+                        while_body = self.tokens[body_start:body_end]
                 
                     # Salva tokens atuais
-                    old_tokens = self.tokens
-                    old_current_inner = self.current
+                        old_tokens = self.tokens
+                        old_current_inner = self.current
                 
-                    try:
+                        try:
                         # Configura para executar o corpo
-                        self.tokens = while_body
-                        self.current = 0
+                            self.tokens = while_body
+                            self.current = 0
                     
                         # Executa cada instrução do corpo
-                        while not self._is_at_end():
-                            self._execute_statement()
+                            while not self._is_at_end():
+                                self._execute_statement()
                 
-                    finally:
+                        finally:
                         # Restaura tokens originais
-                        self.tokens = old_tokens
-                        self.current = old_current_inner
+                            self.tokens = old_tokens
+                            self.current = old_current_inner
             
                 # Executa o corpo com escopo local
-                self._execute_with_local_scope(
-                    execute_while_body, 
-                    f"while loop iteração {loop_count}"
-                )
+                    self._execute_with_local_scope(
+                        execute_while_body, 
+                        f"while loop iteração {loop_count}"
+                    )
             
-            except BreakException:
+                except BreakException:
                 # Break foi chamado - sai do loop
-                if hasattr(self, 'debug_mode') and self.debug_mode:
-                    print(f"[DEBUG] Break executado na iteração {loop_count}")
-                break
+                    if hasattr(self, 'debug_mode') and self.debug_mode:
+                        print(f"[DEBUG] Break executado na iteração {loop_count}")
+                    break
             
-            except ContinueException:
+                except ContinueException:
                 # Continue foi chamado - pula para próxima iteração
-                if hasattr(self, 'debug_mode') and self.debug_mode:
-                    print(f"[DEBUG] Continue executado na iteração {loop_count}")
-                continue
+                    if hasattr(self, 'debug_mode') and self.debug_mode:
+                        print(f"[DEBUG] Continue executado na iteração {loop_count}")
+                    continue
 
-    except Exception as e:
-        if hasattr(self, 'debug_mode') and self.debug_mode:
-            print(f"[DEBUG] Erro no while loop na iteração {loop_count}: {e}")
-        raise
+        except Exception as e:
+            if hasattr(self, 'debug_mode') and self.debug_mode:
+                print(f"[DEBUG] Erro no while loop na iteração {loop_count}: {e}")
+            raise
 
-    finally:
+        finally:
         # Sempre restaura posição original
-        self.current = old_current
+            self.current = old_current
 
     # Proteção contra loop infinito
-    if loop_count >= max_loops:
-        raise QuokkaError(f"Loop while executou {max_loops} iterações. Possível loop infinito.")
+        if loop_count >= max_loops:
+            raise QuokkaError(f"Loop while executou {max_loops} iterações. Possível loop infinito.")
 
     
     def _skip_expression(self):
