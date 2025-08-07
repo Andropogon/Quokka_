@@ -14,7 +14,7 @@ KEYWORDS = {
     # Estruturas principais
     "global", "main", "fun",
     # Controle de fluxo
-    "if", "else", "while", "each", "break", "exit",
+    "if", "else", "while", "each", "break", "continue", "exit",
     # Valores especiais
     "true", "false", "null",
     # Operações especiais

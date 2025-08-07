@@ -79,6 +79,14 @@ class QuokkaError(Exception):
     line: int = 0
     column: int = 0
 
+class BreakException(Exception):
+    """Exceção especial para implementar break (controle de fluxo)"""
+    pass
+
+class ContinueException(Exception):
+    """Exceção especial para implementar continue (controle de fluxo)"""
+    pass
+
 class Environment:
     """Ambiente de execução - armazena variáveis e seus valores"""
     
@@ -440,61 +448,72 @@ class QuokkaInterpreter:
             each_end_token
         )
     
-    def _execute_each_iteration(self, collection: QuokkaArray, item_var_name: str, 
-                               start_token: int, end_token: int):
+    def _execute_each_iteration(self, collection: QuokkaArray, item_var_name: str, start_token: int, end_token: int):
         """
-        Executa a iteração do each para cada elemento da coleção
-        """
+    Executa a iteração do each para cada elemento da coleção
+    """
         # Salva estado atual
         old_tokens = self.tokens
         old_current = self.current
-        
-        # Extrai o corpo do each
+    
+    # Extrai o corpo do each
         each_body = self.tokens[start_token:end_token]
-        
+    
         try:
-            # Para cada item na coleção
-            # Para cada item na coleção
+        # Para cada item na coleção
             for iteration_index, item in enumerate(collection.items):
-    # Cria novo ambiente para a iteração (herda do ambiente atual)
-                iteration_env = self.current_env.create_local_scope()
-    
-    # Define a variável de iteração com o valor atual
-                iteration_env.define(item_var_name, item)
-    
-    # Adiciona variável especial com índice da iteração (opcional)
-                iteration_env.define("__index__", iteration_index)
-    
-    # Debug: mostra escopo da iteração
-                if hasattr(self, 'debug_mode') and self.debug_mode:
-                    print(f"[DEBUG] Iteração {iteration_index}: {item_var_name} = {item}")
+                try:
+                # Cria novo ambiente para a iteração (herda do ambiente atual)
+                    iteration_env = self.current_env.create_local_scope()
+
+                # Define a variável de iteração com o valor atual
+                    iteration_env.define(item_var_name, item)
+
+                # Adiciona variável especial com índice da iteração (opcional)
+                    iteration_env.define("__index__", iteration_index)
+
+                # Debug: mostra escopo da iteração
+                    if hasattr(self, 'debug_mode') and self.debug_mode:
+                        print(f"[DEBUG] Iteração {iteration_index}: {item_var_name} = {item}")
                 
                 # Salva ambiente atual
-                old_env = self.current_env
+                    old_env = self.current_env
                 
-                try:
+                    try:
                     # Configura ambiente da iteração
-                    self.current_env = iteration_env
-                    self.tokens = each_body
-                    self.current = 0
+                        self.current_env = iteration_env
+                        self.tokens = each_body
+                        self.current = 0
                     
                     # Executa o corpo do each
-                    while not self._is_at_end():
-                        self._execute_statement()
+                        while not self._is_at_end():
+                            self._execute_statement()
                 
-                finally:
-                    # Restaura ambiente anterior
-                    self.current_env = old_env
-                
+                    finally:
+                        # Restaura ambiente anterior
+                        self.current_env = old_env
+                    
+                except BreakException:
+                    # Break no each - sai do loop completamente
+                    if hasattr(self, 'debug_mode') and self.debug_mode:
+                        print(f"[DEBUG] Break executado no each, iteração {iteration_index}")
+                    break  # Sai do for loop, terminando o each
+                except ContinueException:
+                # Continue no each - pula para próxima iteração
+                    if hasattr(self, 'debug_mode') and self.debug_mode:
+                        print(f"[DEBUG] Continue executado no each, iteração {iteration_index}")
+                    continue  # Continua o for loop para próxima iteração
+        
         except Exception as e:
-    # Se houve erro na iteração, limpa o escopo
-                if hasattr(self, 'debug_mode') and self.debug_mode:
-                        print(f"[DEBUG] Erro na iteração: {e}")
-                raise
+            # Se houve erro na iteração, limpa o escopo
+            if hasattr(self, 'debug_mode') and self.debug_mode:
+                print(f"[DEBUG] Erro na iteração: {e}")
+            raise
         finally:
             # Restaura estado anterior
             self.tokens = old_tokens
             self.current = old_current
+
 
     
     def _parse_program(self):
@@ -561,6 +580,10 @@ class QuokkaInterpreter:
             self._execute_yield()
         elif self._check_keyword("each"):
             self._execute_each()
+        elif self._check_keyword("break"):         
+            self._execute_break()
+        elif self._check_keyword("continue"): 
+            self._execute_continue()     
         elif self._check_type("IDENTIFIER"):
             self._execute_assignment_or_function_call()
         else:
@@ -575,6 +598,18 @@ class QuokkaInterpreter:
         print(self._quokka_to_string(value))
         
         self._consume_symbol(")")
+    
+    def _execute_break(self):
+        """Executa comando break"""
+        self._consume_keyword("break")
+        # Lança exceção especial para sair do loop
+        raise BreakException()
+
+    def _execute_continue(self):
+        """Executa comando continue"""
+        self._consume_keyword("continue")
+        # Lança exceção especial para pular para próxima iteração
+        raise ContinueException()
     
     def _execute_assignment_or_function_call(self):
         """Executa atribuição de variável ou chamada de função"""
@@ -888,73 +923,82 @@ class QuokkaInterpreter:
         self._execute_while_loop(condition_start, body_start, body_end)
 
     def _execute_while_loop(self, condition_start: int, body_start: int, body_end: int):
-        """
-    Executa as iterações do loop while
-    """
-    # Salva estado atual
+        
         old_current = self.current
-    
+
         loop_count = 0
         max_loops = 10000  # Proteção contra loop infinito
-    
-        try:
-            while loop_count < max_loops:
-                loop_count += 1
+
+    try:
+        while loop_count < max_loops:
+            loop_count += 1
             
             # Re-avalia a condição
-                self.current = condition_start
-                condition = self._parse_expression()
+            self.current = condition_start
+            condition = self._parse_expression()
             
             # Debug opcional
-                if hasattr(self, 'debug_mode') and self.debug_mode:
-                    print(f"[DEBUG] While loop {loop_count}: condição = {condition}")
+            if hasattr(self, 'debug_mode') and self.debug_mode:
+                print(f"[DEBUG] While loop {loop_count}: condição = {condition}")
             
             # Se condição é falsa, sai do loop
-                if not self._is_truthy(condition):
-                    break
+            if not self._is_truthy(condition):
+                break
             
-            # Executa o corpo do while com escopo local
+            # Executa o corpo do while com controle de break/continue
+            try:
                 def execute_while_body():
-                # Extrai o corpo do while
+                    # Extrai o corpo do while
                     while_body = self.tokens[body_start:body_end]
                 
-                # Salva tokens atuais
+                    # Salva tokens atuais
                     old_tokens = self.tokens
                     old_current_inner = self.current
                 
                     try:
-                    # Configura para executar o corpo
+                        # Configura para executar o corpo
                         self.tokens = while_body
                         self.current = 0
                     
-                    # Executa cada instrução do corpo
+                        # Executa cada instrução do corpo
                         while not self._is_at_end():
                             self._execute_statement()
                 
                     finally:
-                    # Restaura tokens originais
+                        # Restaura tokens originais
                         self.tokens = old_tokens
                         self.current = old_current_inner
             
-            # Executa o corpo com escopo local (variáveis locais do loop)
+                # Executa o corpo com escopo local
                 self._execute_with_local_scope(
                     execute_while_body, 
                     f"while loop iteração {loop_count}"
                 )
-    
-        except Exception as e:
-            if hasattr(self, 'debug_mode') and self.debug_mode:
-                print(f"[DEBUG] Erro no while loop na iteração {loop_count}: {e}")
-            raise
-    
-        finally:
-        # Sempre restaura posição original
-            self.current = old_current
-    
-    # Proteção contra loop infinito
-        if loop_count >= max_loops:
-            raise QuokkaError(f"Loop while executou {max_loops} iterações. Possível loop infinito.")
+            
+            except BreakException:
+                # Break foi chamado - sai do loop
+                if hasattr(self, 'debug_mode') and self.debug_mode:
+                    print(f"[DEBUG] Break executado na iteração {loop_count}")
+                break
+            
+            except ContinueException:
+                # Continue foi chamado - pula para próxima iteração
+                if hasattr(self, 'debug_mode') and self.debug_mode:
+                    print(f"[DEBUG] Continue executado na iteração {loop_count}")
+                continue
 
+    except Exception as e:
+        if hasattr(self, 'debug_mode') and self.debug_mode:
+            print(f"[DEBUG] Erro no while loop na iteração {loop_count}: {e}")
+        raise
+
+    finally:
+        # Sempre restaura posição original
+        self.current = old_current
+
+    # Proteção contra loop infinito
+    if loop_count >= max_loops:
+        raise QuokkaError(f"Loop while executou {max_loops} iterações. Possível loop infinito.")
 
     
     def _skip_expression(self):
