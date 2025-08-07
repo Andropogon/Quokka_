@@ -45,3 +45,4 @@ Para projetos mais complexos, considere as limitações conhecidas e avalie se Q
 ---
 
 ***para mais informações, cheque a **Documentação oficial da Linguagem Quokka v1.0 beta***  
+ 

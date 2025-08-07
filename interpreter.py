@@ -1405,4 +1405,4 @@ if __name__ == "__main__":
     
     interpreter = QuokkaInterpreter()
     print("=== EXECUTANDO CÓDIGO QUOKKA COM EACH ===")
-    interpreter.interpret(test_code)
+    interpreter.interpret(test_code) 

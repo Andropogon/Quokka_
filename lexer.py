@@ -164,4 +164,4 @@ if __name__ == "__main__":
     tokens = lexer.tokenize(test_code)
    
     print("=== TOKENS GERADOS ===")
-    print_tokens(tokens, show_position=True)
+    print_tokens(tokens, show_position=True) 

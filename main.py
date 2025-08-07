@@ -24,4 +24,4 @@ if __name__ == "__main__":
     interpreter = QuokkaInterpreter()
     interpreter.interpret(code)
 
-    print("\n=== EXECUÇÃO FINALIZADA ===")
+    print("\n=== EXECUÇÃO FINALIZADA ===") 

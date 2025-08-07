@@ -1,6 +1,6 @@
 # Documentação Oficial da Linguagem Quokka V1.0 beta
 
----
+--- 
 
 ## Índice
 
