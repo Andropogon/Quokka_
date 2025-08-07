@@ -2,7 +2,6 @@ from typing import Any, Dict, List, Optional, Union
 from dataclasses import dataclass
 import sys
 
-# Reutilizamos o lexer anterior
 from lexer import QuokkaLexer, Token
 
 class QuokkaArray:
@@ -130,9 +129,9 @@ class QuokkaFunction:
     def __init__(self, name: str, params: List[str], body: List[Token], start_token: int, end_token: int):
         self.name = name
         self.params = params
-        self.body = body  # Tokens do corpo da função
-        self.start_token = start_token  # Posição inicial no array de tokens
-        self.end_token = end_token      # Posição final no array de tokens
+        self.body = body  
+        self.start_token = start_token  
+        self.end_token = end_token      
 
 class YieldException(Exception):
     """Exceção especial para implementar yield (controle de fluxo)"""
@@ -231,19 +230,19 @@ class QuokkaInterpreter:
         self._consume_symbol("(")
     
         params = []
-        if not self._check_symbol(")"):  # ADICIONADA: verifica se há parâmetros
-            while True:  # ALTERADA: de 'while not self._check_symbol(")") and not self._is_at_end():'
+        if not self._check_symbol(")"): 
+            while True:  
                 if not self._check_type("IDENTIFIER"):
                     raise QuokkaError("Esperado nome do parâmetro")
             
                 params.append(self._advance().value)
             
-            # ALTERADA: lógica de vírgulas
+            
                 if self._check_symbol(","):
-                    self._advance()  # consome ','
-                    continue  # ADICIONADA: força próxima iteração
+                    self._advance()  
+                    continue 
                 elif self._check_symbol(")"):
-                    break  # ADICIONADA: sai do loop
+                    break  
                 else:
                     raise QuokkaError("Esperado ',' ou ')' em parâmetros")
     
@@ -358,17 +357,17 @@ class QuokkaInterpreter:
     
     # Coleta argumentos
         args = []
-        if not self._check_symbol(")"):  # ADICIONADA: verifica se há argumentos
-            while True:  # ALTERADA: de 'while not self._check_symbol(")") and not self._is_at_end():'
+        if not self._check_symbol(")"): 
+            while True:  
                 arg = self._parse_expression()
                 args.append(arg)
             
-            # ALTERADA: lógica de vírgulas
+            
                 if self._check_symbol(","):
-                    self._advance()  # consome ','
-                    continue  # ADICIONADA: força próxima iteração
+                    self._advance()  
+                    continue  
                 elif self._check_symbol(")"):
-                    break  # ADICIONADA: sai do loop
+                    break  
                 else:
                     raise QuokkaError("Esperado ',' ou ')' em argumentos da função")
     
@@ -554,7 +553,7 @@ class QuokkaInterpreter:
             self._execute_print()
         elif self._check_keyword("if"):
             self._execute_if()
-        elif self._check_keyword("while"):          # ADICIONAR ESTA LINHA
+        elif self._check_keyword("while"):          
             self._execute_while()
         elif self._check_keyword("capture"):
             self._execute_capture()
@@ -563,10 +562,9 @@ class QuokkaInterpreter:
         elif self._check_keyword("each"):
             self._execute_each()
         elif self._check_type("IDENTIFIER"):
-            # Pode ser atribuição
             self._execute_assignment_or_function_call()
         else:
-            self._advance()  # Pula por enquanto
+            self._advance() 
     
     def _execute_print(self):
         """Executa comando print"""
@@ -701,7 +699,7 @@ class QuokkaInterpreter:
         
         elif self._check_symbol("{"):
             # Dictionary access: var{'key'}
-            self._advance()  # {
+            self._advance() 
             if not self._check_type("KEY"):
                 raise QuokkaError("Esperada chave (com aspas simples)")
             key = self._advance().value
@@ -724,11 +722,10 @@ class QuokkaInterpreter:
         Executa o bloco do capture e extrai a mensagem do prompt
         Retorna a string do prompt
         """
-        # Por enquanto, esperamos apenas prompt("mensagem")
         if not self._check_type("IDENTIFIER") or self._peek().value != "prompt":
             raise QuokkaError("Esperado prompt() dentro do bloco capture")
         
-        self._advance()  # prompt
+        self._advance() 
         self._consume_symbol("(")
         
         # Analisa a mensagem (deve ser uma expressão que resulte em string)
@@ -843,7 +840,7 @@ class QuokkaInterpreter:
             # else if - pula a condição e o bloco
                     self._advance()  # consume 'if'
                     self._consume_symbol("(")
-                    self._skip_expression()  # Pula a condição
+                    self._skip_expression()  
                     self._consume_symbol(")")
                     self._consume_symbol("{")
                     self._skip_block()
@@ -1018,7 +1015,7 @@ class QuokkaInterpreter:
             
             if doperator == "==":
                 expr = expr == right
-            else:  # !=
+            else:  
                 expr = expr != right
         
         return expr
@@ -1048,7 +1045,7 @@ class QuokkaInterpreter:
             
             if doperator == ">=":
                 expr = expr >= right
-            else:  # <=
+            else:  
                 expr = expr <= right
         
         return expr
@@ -1067,7 +1064,7 @@ class QuokkaInterpreter:
                     expr = self._quokka_to_string(expr) + self._quokka_to_string(right)
                 else:
                     expr = expr + right
-            else:  # -
+            else:  
                 expr = expr - right
         return expr
     
@@ -1081,7 +1078,7 @@ class QuokkaInterpreter:
             
             if ooperator == "*":
                 expr = expr * right
-            else:  # /
+            else:  
                 if right == 0:
                     raise QuokkaError("Divisão por zero")
                 expr = expr / right

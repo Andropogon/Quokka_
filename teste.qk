@@ -1,9 +1,3 @@
-fun somar(a, b){
-    soma = a + b
-    yield()
-}
-
-main{
-    soma = somar(10, 20)  # soma recebe 30
-    print("Soma: " + soma)
-}
+# escreva aqui o seu código Quokka. 
+# para executar este arquivo, digite no terminal: python main.py teste.qk
+# se desejar, crie um arquivo novo para outros testes e o execute com: python main.py (seu arquivo).qk

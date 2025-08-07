@@ -1,24 +1,24 @@
-# Documentação Oficial da Linguagem Quokka V0.9
+# Documentação Oficial da Linguagem Quokka V1.0 beta
 
 ---
 
 ## Índice
 
-2. [Introdução](#introdução)
-3. [Sintaxe Básica](#sintaxe-básica)
-4. [Tipos de Dados](#tipos-de-dados)
-5. [Estrutura do Programa](#estrutura-do-programa)
-6. [Variáveis e Escopo](#variáveis-e-escopo)
-7. [Operadores](#operadores)
-8. [Estruturas de Controle](#estruturas-de-controle)
-9. [Funções](#funções)
-10. [Estruturas de Dados](#estruturas-de-dados)
-11. [Sistema de Entrada de Dados](#sistema-de-entrada-de-dados)
-12. [Comandos Especiais](#comandos-especiais)
-13. [Tratamento de Erros](#tratamento-de-erros)
-14. [Exemplos Práticos](#exemplos-práticos)
-15. [Boas Práticas](#boas-práticas)
-16. [Limitações Conhecidas](#limitações-conhecidas)
+1. [Introdução](#introdução)
+2. [Sintaxe Básica](#sintaxe-básica)
+3. [Tipos de Dados](#tipos-de-dados)
+4. [Estrutura do Programa](#estrutura-do-programa)
+5. [Variáveis e Escopo](#variáveis-e-escopo)
+6. [Operadores](#operadores)
+7. [Estruturas de Controle](#estruturas-de-controle)
+8. [Funções](#funções)
+9. [Estruturas de Dados](#estruturas-de-dados)
+10. [Sistema de Entrada de Dados](#sistema-de-entrada-de-dados)
+11. [Comandos Especiais](#comandos-especiais)
+12. [Tratamento de Erros](#tratamento-de-erros)
+13. [Exemplos Práticos](#exemplos-práticos)
+14. [Boas Práticas](#boas-práticas)
+15. [Limitações Conhecidas](#limitações-conhecidas)
 
 ---
 
@@ -448,12 +448,12 @@ dict_vazio = { }
 
 # Dicionário com pares chave-valor
 pessoa = {
-    'nome' = "João" .
+    'nome' = "João" . 
     'idade' = 30 .
     'cidade' = "São Paulo"
 }
 
-# Dicionário misto
+# ou
 configuracao = {
     'debug' = true .
     'versao' = 1.5 .
@@ -599,7 +599,7 @@ Retorna valor de uma função:
 ```quokka
 fun calcular(x, y){
     resultado = x + y
-    yield(resultado)  # Retorna o resultado
+    yield(resultado) 
 }
 ```
 
@@ -607,7 +607,7 @@ fun calcular(x, y){
 
 ```quokka
 capture[entrada]: string {
-    prompt("Digite algo:")  # Só funciona dentro de capture
+    prompt("Digite algo:")  # Só funciona dentro de capture. Ainda não existem outras aplicações de 'prompt()', pois é um traço vestigial de versões anteriores, por isso, talvez, seja **substituído por print() no futuro**
 }
 ```
 
@@ -644,7 +644,7 @@ capture[entrada]: string {
 ```quokka
 # Use print para debug
 print("Valor de x: " + x)
-print("Chegou aqui!")
+print("Chegou aqui!") # Quokka é procedual, portanto é executada linha a linha até encontrar um erro e parar 
 
 # Verifique valores antes de usar
 if(variavel != null){
@@ -817,6 +817,7 @@ main{
     # Lógica principal aqui
 }
 ```
+O escopo main ainda é global, como o do global{}, mas isso não impede o usuário de seguir as boas práticas de organização e declarar suas variáveis globais no bloco destinado a isso
 
 ### Validação de Entrada
 
@@ -876,21 +877,23 @@ fun acessarArray(array, indice){
 
 ### Funcionalidades Não Implementadas
 
+algumas funcionalidades ainda não foram implementadas. Porém, nenhuma apresenta criticidade significativa de prioridade, portanto o desenvolvimento seguirá focado em consertar e melhorar features já existentes.
+
 1. **Comandos de controle de fluxo:**
-   - `break` e `continue` em loops
-   - `return` múltiplo em funções
+   - `break` e `continue` ou equivalentes em loops
+   - `yield` múltiplo em funções
 
 2. **Estruturas avançadas:**
-   - `switch/case`
-   - `for` tradicional
-   - `do-while`
+   - `switch/case` ou equivalentes
+   - `for` ou equivalente tradicional
+   - `do-while` ou equivalentes
 
 3. **Tratamento de erros:**
-   - `try/catch/finally`
+   - `try/catch/finally` ou equivalentes
    - Lançamento customizado de exceções
 
 4. **Funcionalidades de sistema:**
-   - Manipulação de arquivos
+   - Manipulação de arquivos e comunicação externa
    - Operações de rede
    - Chamadas de sistema
 

@@ -1,7 +1,7 @@
 # Quokka
-Quokka language v0.9
+Quokka language v1.0 beta
 
-**Versão:** 0.9 
+**Versão:** 1.0 beta 
 **Versão do interpretador:** 6.0
 **Data:** Agosto 2025  
 **Autores:** Lucas da Roza Cardoso
@@ -44,4 +44,4 @@ Para projetos mais complexos, considere as limitações conhecidas e avalie se Q
 
 ---
 
-***para mais informações, cheque a **Documentação oficial da Linguagem Quokka v0.9***  
+***para mais informações, cheque a **Documentação oficial da Linguagem Quokka v1.0 beta***  
