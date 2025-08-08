@@ -1,4 +1,4 @@
-# Documentação Oficial da Linguagem Quokka V1.0 beta
+# Documentação Oficial da Linguagem Quokka V1.1 beta
 
 --- 
 
@@ -284,7 +284,7 @@ each($numeros : numero){ # a variável 'numero' representa o elemento do array '
 
 ### Controle de Fluxo
 
-Quokka não possui `break` ou `continue` nativos. Use variáveis de controle:
+Quokka agora possui `break` e `continue` nativos. O uso de variáveis de controle:
 
 ```quokka
 # Em vez de break
@@ -296,7 +296,20 @@ while(continuar == true){
     }
 }
 ```
+Ainda é possível, mas pode ser substituído por:
 
+```quokka
+while(num > 0){
+    # ... código ...
+    if(num = 6){
+        continue # pula a iteração do número 6 no loop
+    }
+    if(num = 10){
+        break # para o loop
+    }
+}
+```
+Break e continue executam a mesma função no iterador each()
 ---
 
 ## Funções
