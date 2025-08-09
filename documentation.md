@@ -1,4 +1,4 @@
-# Documentação Oficial da Linguagem Quokka V1.1 beta
+# Documentação Oficial da Linguagem Quokka V1.2
 
 --- 
 
@@ -610,6 +610,7 @@ Transforma o valor de uma variável entre tipos
 a = 5
 b = 6
 print(to_str(a) + to_str(b)) # 56
+```
 ---
 
 ## Tratamento de Erros
