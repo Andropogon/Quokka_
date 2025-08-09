@@ -16,9 +16,8 @@
 10. [Sistema de Entrada de Dados](#sistema-de-entrada-de-dados)
 11. [Comandos Especiais](#comandos-especiais)
 12. [Tratamento de Erros](#tratamento-de-erros)
-13. [Exemplos Práticos](#exemplos-práticos)
-14. [Boas Práticas](#boas-práticas)
-15. [Limitações Conhecidas](#limitações-conhecidas)
+13. [Boas Práticas](#boas-práticas)
+14. [Limitações Conhecidas](#limitações-conhecidas)
 
 ---
 
@@ -609,9 +608,8 @@ Transforma o valor de uma variável entre tipos
 
 ```quokka
 a = 5
-b = 4
-
-
+b = 6
+print(to_str(a) + to_str(b)) # 56
 ---
 
 ## Tratamento de Erros
@@ -650,136 +648,6 @@ print("Chegou aqui!") # Quokka é procedual, portanto é executada linha a linha
 # Verifique valores antes de usar
 if(variavel != null){
     # Use a variável
-}
-```
-
----
-
-## Exemplos Práticos
-
-### Calculadora Simples
-
-```quokka
-global{
-    num1 = 0
-    num2 = 0
-    operacao = ""
-    resultado = 0
-}
-
-fun somar(a, b){
-    yield(a + b)
-}
-
-fun dividir(a, b){
-    if(b == 0){
-        print("Erro: divisão por zero")
-        yield(0)
-    }
-    yield(a / b)
-}
-
-main{
-    print("=== Calculadora ===")
-    
-    capture[num1]: float {
-        prompt("Primeiro número:")
-    }
-    
-    capture[operacao]: string {
-        prompt("Operação (+, -, *, /):")
-    }
-    
-    capture[num2]: float {
-        prompt("Segundo número:")
-    }
-    
-    if(operacao == "+"){
-        resultado = somar(num1, num2)
-    }
-    else{
-        if(operacao == "/"){
-            resultado = dividir(num1, num2)
-        }
-    }
-    
-    print("Resultado: " + resultado)
-}
-```
-
-### Sistema de Cadastro
-
-```quokka
-global{
-    pessoas = { }
-    total = 0
-}
-
-fun adicionarPessoa(nome, idade){
-    nova_pessoa = {
-        'nome' = nome .
-        'idade' = idade .
-        'id' = total + 1
-    }
-    
-    pessoas[total] = nova_pessoa
-    total = total + 1
-    
-    print("Pessoa cadastrada com ID: " + nova_pessoa{'id'})
-}
-
-fun listarPessoas(){
-    if(total == 0){
-        print("Nenhuma pessoa cadastrada")
-        yield(null)
-    }
-    
-    print("=== Lista de Pessoas ===")
-    contador = 0
-    
-    while(contador < total){
-        pessoa = pessoas[contador]
-        print("ID: " + pessoa{'id'} + " - " + pessoa{'nome'} + " (" + pessoa{'idade'} + " anos)")
-        contador = contador + 1
-    }
-}
-
-main{
-    continuar = true
-    
-    while(continuar == true){
-        print("\n1-Cadastrar | 2-Listar | 0-Sair")
-        
-        opcao = 0
-        capture[opcao]: int {
-            prompt("Opção:")
-        }
-        
-        if(opcao == 1){
-            nome = ""
-            idade = 0
-            
-            capture[nome]: string {
-                prompt("Nome:")
-            }
-            
-            capture[idade]: int {
-                prompt("Idade:")
-            }
-            
-            adicionarPessoa(nome, idade)
-        }
-        else{
-            if(opcao == 2){
-                listarPessoas()
-            }
-            else{
-                if(opcao == 0){
-                    continuar = false
-                }
-            }
-        }
-    }
 }
 ```
 
@@ -824,10 +692,8 @@ O escopo main ainda é global, como o do global{}, mas isso não impede o usuár
 
 ```quokka
 # ✅ Sempre valide entradas críticas
-capture[idade]: int {
-    prompt("Idade:")
-}
 
+idade = to_int(prompt("Qual sua idade?: "))
 if(idade < 0 || idade > 120){
     print("Idade inválida!")
     idade = 0
@@ -881,7 +747,6 @@ fun acessarArray(array, indice){
 algumas funcionalidades ainda não foram implementadas. Porém, nenhuma apresenta criticidade significativa de prioridade, portanto o desenvolvimento seguirá focado em consertar e melhorar features já existentes.
 
 1. **Comandos de controle de fluxo:**
-   - `break` e `continue` ou equivalentes em loops
    - `yield` múltiplo em funções
 
 2. **Estruturas avançadas:**
@@ -905,15 +770,7 @@ algumas funcionalidades ainda não foram implementadas. Porém, nenhuma apresent
 
 ### Workarounds
 
-```quokka
-# Em vez de break, use variável de controle
-continuar = true
-while(continuar == true){
-    if(condicao_saida){
-        continuar = false
-    }
-}
-
+```
 # Em vez de for, use while
 i = 0
 while(i < 10){

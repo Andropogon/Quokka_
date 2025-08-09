@@ -6,5 +6,5 @@ global{
     b = 6
 }
 main{
-    print(to_str(a))
+    print(to_str(a) + to_str(b))
 }

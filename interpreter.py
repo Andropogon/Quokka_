@@ -574,8 +574,6 @@ class QuokkaInterpreter:
             self._execute_if()
         elif self._check_keyword("while"):          
             self._execute_while()
-        elif self._check_keyword("capture"):
-            self._execute_capture()
         elif self._check_keyword("yield"):         
             self._execute_yield()
         elif self._check_keyword("each"):
@@ -672,160 +670,7 @@ class QuokkaInterpreter:
         else:
         # Apenas referência à variável (não faz nada)
             pass
-    def _execute_capture(self):
-        """
-        Executa comando capture
-        Sintaxe: capture[variável]: tipo { prompt("mensagem") }
-        """
-        self._consume_keyword("capture")
-        self._consume_symbol("[")
-        
-        # Pode ser variável simples ou acesso a estrutura
-        target = self._parse_capture_target()
-        
-        self._consume_symbol("]")
-        self._consume_ooperator(":")
-        
-        # Tipo esperado (int, float, string)
-        if not self._check_type("IDENTIFIER"):
-            raise QuokkaError("Esperado tipo após ':'")
-        
-        expected_type = self._advance().value
-        if expected_type not in ["int", "float", "string", "bool"]:
-            raise QuokkaError(f"Tipo inválido: {expected_type}")
-        
-        self._consume_symbol("{")
-        
-        # Executa o bloco que deve conter prompt()
-        prompt_message = self._execute_capture_block()
-        
-        self._consume_symbol("}")
-        
-        # Obtém input do usuário
-        user_input = input(prompt_message)
-        
-        # Converte para o tipo apropriado
-        converted_value = self._convert_input_to_type(user_input, expected_type)
-        
-        # Atribui à variável/estrutura
-        self._assign_capture_target(target, converted_value)
     
-    def _parse_capture_target(self):
-        """
-        Analisa o destino do capture: variável simples ou acesso a estrutura
-        Retorna informações sobre onde armazenar o valor
-        """
-        if not self._check_type("IDENTIFIER"):
-            raise QuokkaError("Esperado nome de variável em capture")
-        
-        var_name = self._advance().value
-        
-        # Verifica se é acesso a estrutura
-        if self._check_symbol("["):
-            # Array access: var[index]
-            self._advance()  # [
-            index = self._parse_expression()
-            self._consume_symbol("]")
-            return {
-                'type': 'array_access',
-                'variable': var_name,
-                'index': index
-            }
-        
-        elif self._check_symbol("{"):
-            # Dictionary access: var{'key'}
-            self._advance() 
-            if not self._check_type("KEY"):
-                raise QuokkaError("Esperada chave (com aspas simples)")
-            key = self._advance().value
-            self._consume_symbol("}")
-            return {
-                'type': 'dict_access',
-                'variable': var_name,
-                'key': key
-            }
-        
-        else:
-            # Variável simples
-            return {
-                'type': 'simple',
-                'variable': var_name
-            }
-    
-    def _execute_capture_block(self) -> str:
-        """
-        Executa o bloco do capture e extrai a mensagem do prompt
-        Retorna a string do prompt
-        """
-        if not self._check_type("IDENTIFIER") or self._peek().value != "prompt":
-            raise QuokkaError("Esperado prompt() dentro do bloco capture")
-        
-        self._advance() 
-        self._consume_symbol("(")
-        
-        # Analisa a mensagem (deve ser uma expressão que resulte em string)
-        message_expr = self._parse_expression()
-        prompt_message = self._quokka_to_string(message_expr)
-        
-        self._consume_symbol(")")
-        
-        return prompt_message
-    
-    def _convert_input_to_type(self, user_input: str, expected_type: str):
-        """Converte o input do usuário para o tipo esperado"""
-        user_input = user_input.strip()
-        
-        try:
-            if expected_type == "int":
-                return int(user_input)
-            elif expected_type == "float":
-                return float(user_input)
-            elif expected_type == "string":
-                return user_input
-            elif expected_type == "bool":
-                lower_input = user_input.lower()
-                if lower_input in ["true", "verdadeiro", "sim", "s", "1", "yes", "y"]:
-                    return True
-                elif lower_input in ["false", "falso", "não", "n", "0", "no"]:
-                    return False
-                else:
-                    raise ValueError("Valor booleano inválido")
-            else:
-                raise QuokkaError(f"Tipo não suportado: {expected_type}")
-        
-        except ValueError as e:
-            raise QuokkaError(f"Não foi possível converter '{user_input}' para {expected_type}: {e}")
-    
-    def _assign_capture_target(self, target: dict, value):
-        """Atribui o valor capturado ao destino apropriado"""
-        if target['type'] == 'simple':
-            # Variável simples
-            self.current_env.set(target['variable'], value)
-        
-        elif target['type'] == 'array_access':
-            # Acesso a array
-            var_name = target['variable']
-            index = target['index']
-            
-            obj = self.current_env.get(var_name)
-            if isinstance(obj, QuokkaArray):
-                if isinstance(index, int):
-                    obj[index] = value
-                else:
-                    raise QuokkaError("Índice de array deve ser um número")
-            else:
-                raise QuokkaError(f"'{var_name}' não é um array")
-        
-        elif target['type'] == 'dict_access':
-            # Acesso a dicionário
-            var_name = target['variable']
-            key = target['key']
-            
-            obj = self.current_env.get(var_name)
-            if isinstance(obj, QuokkaDict):
-                obj[key] = value
-            else:
-                raise QuokkaError(f"'{var_name}' não é um dicionário")
     
     def _execute_if(self):
         """Executa estrutura condicional if com suporte a else if"""
@@ -1254,13 +1099,19 @@ class QuokkaInterpreter:
         if self._check_keyword("null"):
             self._advance()
             return None
-    
+        if self._check_keyword("prompt"):
+            self._advance()
+            return self._execute_prompt()
     # Suporte para estruturas de dados
         if self._check_symbol("{"):
             return self._parse_data_structure()
     
         if self._check_type("IDENTIFIER"):
             var_name = self._advance().value
+        
+        # Verificar se é função de conversão
+            if var_name in ["to_int", "to_float", "to_bool", "to_str"] and self._check_symbol("("):
+                return self._execute_conversion_function(var_name)
         
         # Verifica se é nome composto (função com pontos)
             while self._check_ooperator("."):
@@ -1322,6 +1173,90 @@ class QuokkaInterpreter:
             return str(value)
         else:
             return str(value)
+
+    def _execute_prompt(self) -> str:
+        """
+        Executa função prompt()
+        Sintaxe: prompt("mensagem")
+        Retorna: string com input do usuário
+        """
+    # prompt já foi consumido em _parse_primary()
+        self._consume_symbol("(")
+    
+    # Analisa a mensagem (deve ser uma expressão que resulte em string)
+        message_expr = self._parse_expression()
+        message = self._quokka_to_string(message_expr)
+    
+        self._consume_symbol(")")
+    
+    # Pede input do usuário e retorna como string
+        user_input = input(message)
+        return user_input
+
+    def _execute_conversion_function(self, func_name: str) -> QuokkaValue:
+        """
+        Executa funções de conversão: to_int(), to_float(), to_bool(), to_str
+        """
+    # Nome da função já foi consumido
+        self._consume_symbol("(")
+    
+    # Pega o argumento
+        arg = self._parse_expression()
+    
+        self._consume_symbol(")")
+    
+    # Converte baseado no tipo
+        try:
+            if func_name == "to_int":
+                if isinstance(arg, str):
+                    return int(arg)
+                elif isinstance(arg, float):
+                    return int(arg)
+                elif isinstance(arg, int):
+                    return arg
+                else:
+                    raise ValueError(f"Não é possível converter {type(arg)} para int")
+                
+            elif func_name == "to_float":
+                if isinstance(arg, str):
+                    return float(arg)
+                elif isinstance(arg, int):
+                    return float(arg)
+                elif isinstance(arg, float):
+                    return arg
+                else:
+                    raise ValueError(f"Não é possível converter {type(arg)} para float")
+
+            elif func_name == "to_bool":
+                if isinstance(arg, str):
+                    arg_lower = arg.lower().strip()
+                    if arg_lower in ["true", "yes", "sim", "s", "1", "verdadeiro","y"]:
+                        return True
+                    elif arg_lower in ["false", "no", "não", "n", "0", "falso"]:
+                        return False
+                    else:
+                        raise ValueError(f"'{arg}' não é um valor booleano válido")
+                elif isinstance(arg, bool):
+                    return arg
+                elif isinstance(arg, int):
+                    return arg != 0
+                elif isinstance(arg, float):
+                    return arg != 0.0
+                else:
+                    raise ValueError(f"Não é possível converter {type(arg)} para bool")
+                    
+            elif func_name == "to_str":
+                if isinstance(arg, str):
+                    return arg
+                elif isinstance(arg, int):
+                    return str(arg)
+                elif isinstance(arg, float):
+                    return str(arg)
+                else:
+                    raise ValueError(f"Não é possível converter {type(arg)} para float")
+                
+        except ValueError as e:
+            raise QuokkaError(f"Erro na conversão {func_name}: {e}")
     
     # Métodos de controle de tokens
     def _advance(self) -> Token:

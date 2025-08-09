@@ -4,7 +4,7 @@ Quokka language v1.2
 **Versão atual:** 1.2 
 **Versão do interpretador:** 7.0
 **Data:** Agosto 2025  
-**Autores:** Lucas da Roza Cardoso
+**Autores:** Lucas da Roza Cardoso 
 
 
 ## Introdução

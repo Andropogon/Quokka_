@@ -9,7 +9,7 @@ class Token(NamedTuple):
     column: int = 1
 
 
-# Palavras-chave do Quokka
+# Palavras-chave do Quokka 
 KEYWORDS = {
     # Estruturas principais
     "global", "main", "fun",

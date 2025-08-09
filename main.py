@@ -1,9 +1,9 @@
 import sys
 from lexer import QuokkaLexer
-from int2 import QuokkaInterpreter
+from interpreter import QuokkaInterpreter
 
 if __name__ == "__main__":
-    # Verifica se o usuário passou um argumento
+    # Verifica se o usuário passou um argumento 
     if len(sys.argv) < 2:
         print("Uso: python main.py arquivo.qk")
         sys.exit(1)
