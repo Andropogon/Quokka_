@@ -18,7 +18,7 @@ KEYWORDS = {
     # Valores especiais
     "true", "false", "null",
     # Operações especiais
-    "yield", "capture", "print", "append", "transform"
+    "yield", "print", "next", "capture", "prompt"
 }
 
 
