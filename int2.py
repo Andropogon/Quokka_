@@ -581,9 +581,7 @@ class QuokkaInterpreter:
         elif self._check_keyword("break"):         
             self._execute_break()
         elif self._check_keyword("continue"): 
-            self._execute_continue()
-        elif self._check_keyword("prompt"):
-            self._execute_prompt     
+            self._execute_continue()     
         elif self._check_type("IDENTIFIER"):
             self._execute_assignment_or_function_call()
         else:
@@ -1101,20 +1099,18 @@ class QuokkaInterpreter:
         if self._check_keyword("null"):
             self._advance()
             return None
-    
+        if self._check_keyword("prompt"):
+            self._advance()
+            return self._execute_prompt()
     # Suporte para estruturas de dados
         if self._check_symbol("{"):
             return self._parse_data_structure()
     
         if self._check_type("IDENTIFIER"):
             var_name = self._advance().value
-
-        if self._check_type("IDENTIFIER"):
-            var_name = self._advance().value
-        
         
         # Verificar se é função de conversão
-            if var_name in ["to_int", "to_float", "to_bool"] and self._check_symbol("("):
+            if var_name in ["to_int", "to_float", "to_bool", "to_str"] and self._check_symbol("("):
                 return self._execute_conversion_function(var_name)
         
         # Verifica se é nome composto (função com pontos)
@@ -1180,10 +1176,10 @@ class QuokkaInterpreter:
 
     def _execute_prompt(self) -> str:
         """
-    Executa função prompt()
-    Sintaxe: prompt("mensagem")
-    Retorna: string com input do usuário
-    """
+        Executa função prompt()
+        Sintaxe: prompt("mensagem")
+        Retorna: string com input do usuário
+        """
     # prompt já foi consumido em _parse_primary()
         self._consume_symbol("(")
     
@@ -1199,8 +1195,8 @@ class QuokkaInterpreter:
 
     def _execute_conversion_function(self, func_name: str) -> QuokkaValue:
         """
-    Executa funções de conversão: to_int(), to_float(), to_bool()
-    """
+        Executa funções de conversão: to_int(), to_float(), to_bool(), to_str
+        """
     # Nome da função já foi consumido
         self._consume_symbol("(")
     
@@ -1234,7 +1230,7 @@ class QuokkaInterpreter:
             elif func_name == "to_bool":
                 if isinstance(arg, str):
                     arg_lower = arg.lower().strip()
-                    if arg_lower in ["true", "yes", "sim", "s", "1", "verdadeiro"]:
+                    if arg_lower in ["true", "yes", "sim", "s", "1", "verdadeiro","y"]:
                         return True
                     elif arg_lower in ["false", "no", "não", "n", "0", "falso"]:
                         return False
@@ -1248,6 +1244,16 @@ class QuokkaInterpreter:
                     return arg != 0.0
                 else:
                     raise ValueError(f"Não é possível converter {type(arg)} para bool")
+                    
+            elif func_name == "to_str":
+                if isinstance(arg, str):
+                    return arg
+                elif isinstance(arg, int):
+                    return str(arg)
+                elif isinstance(arg, float):
+                    return str(arg)
+                else:
+                    raise ValueError(f"Não é possível converter {type(arg)} para float")
                 
         except ValueError as e:
             raise QuokkaError(f"Erro na conversão {func_name}: {e}")

@@ -522,45 +522,37 @@ each($pessoas : pessoa){
 
 ## Sistema de Entrada de Dados
 
-### Comando capture
+### Comando prompt()
 
-O comando `capture[]` é usado para obter entrada do usuário:
+O comando `prompt()` é usado para obter entrada do usuário:
 
 ```quokka
-capture[variavel]: tipo {
-    prompt("mensagem")
-}
+variavel = to_tipo(prompt(mensagem))
 ```
 
 #### Tipos Suportados
 
-- `string` - Texto
-- `int` - Número inteiro
-- `float` - Número decimal
-- `bool` - Valor booleano
+`prompt()` retorna todo dado em forma de string de texto e funções de tranformação podem ser aplicadas, como:
+
+- `to_int` - Número inteiro
+- `to_float` - Número decimal
+- `to_bool` - Valor booleano
 
 #### Exemplos Básicos
 
 ```quokka
 # Captura string
-capture[nome]: string {
-    prompt("Digite seu nome:")
-}
+nome = prompt("Digite seu nome: ")
 
 # Captura número inteiro
-capture[idade]: int {
-    prompt("Digite sua idade:")
-}
+idade = to_int(prompt("Digite sua idade: "))
 
 # Captura número decimal
-capture[altura]: float {
-    prompt("Digite sua altura (em metros):")
-}
+altura = to_float(prompt("Digite sua altura (em metros): "))
 
 # Captura booleano
-capture[ativo]: bool {
-    prompt("Usuário ativo? (true/false):")
-}
+ativo = to_bool(prompt("Usuário ativo? (s/n): "))
+
 ```
 
 #### Captura em Estruturas de Dados
@@ -568,15 +560,12 @@ capture[ativo]: bool {
 ```quokka
 # Captura para array
 numeros = { 0 . 0 . 0 }
-capture[numeros[0]]: int {
-    prompt("Primeiro número:")
-}
+numeros[0] = to_int(prompt("Primeiro número: "))
 
 # Captura para dicionário
 pessoa = { 'nome' = "" . 'idade' = 0 }
-capture[pessoa{'nome'}]: string {
-    prompt("Nome da pessoa:")
-}
+pessoa{'nome'} = prompt("Nome da pessoa: ")
+
 ```
 
 #### Validação Automática
@@ -585,9 +574,8 @@ capture[pessoa{'nome'}]: string {
 # Se o usuário digitar um valor inválido para o tipo,
 # o sistema mostra erro automaticamente
 
-capture[numero]: int {
-    prompt("Digite um número:")  # Se digitar "abc", mostra erro
-}
+numero = to_int(prompt("Digite um número: ")) # Se digitar "abc", mostra erro
+
 ```
 
 ---
@@ -615,14 +603,14 @@ fun calcular(x, y){
     yield(resultado) 
 }
 ```
+### to_type
 
-### Comando prompt (apenas dentro de capture)
+Transforma o valor de uma variável entre tipos
 
 ```quokka
-capture[entrada]: string {
-    prompt("Digite algo:")  # Só funciona dentro de capture. Ainda não existem outras aplicações de 'prompt()', pois é um traço vestigial de versões anteriores, por isso, talvez, seja **substituído por print() no futuro**
-}
-```
+a = 5
+b = 4
+
 
 ---
 

@@ -18,7 +18,7 @@ KEYWORDS = {
     # Valores especiais
     "true", "false", "null",
     # Operações especiais
-    "yield", "print", "next", "capture", "prompt"
+    "yield", "print", "next", "prompt"
 }
 
 
@@ -141,23 +141,8 @@ def print_tokens(tokens: List[Token], show_position: bool = False):
 if __name__ == "__main__":
     # Exemplo de código Quokka
     test_code = '''
-    global{
-        nome = null
-        idade = null
-    }
-   
-    main{
-        capture[nome]: string {
-            prompt("Seu nome:")
-        }
-       
-        if(idade >= 18){
-            print("Maior de idade")
-        }
-        else{
-            print("Menor de idade")
-        }
-    }
+    
+    prompt("qual é seu nome?")
     '''
    
     lexer = QuokkaLexer()

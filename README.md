@@ -1,8 +1,8 @@
 # Quokka
-Quokka language v1.1 beta
+Quokka language v1.2
 
-**Versão atual:** 1.1 beta 
-**Versão do interpretador:** 6.0
+**Versão atual:** 1.2 
+**Versão do interpretador:** 7.0
 **Data:** Agosto 2025  
 **Autores:** Lucas da Roza Cardoso
 
@@ -16,7 +16,7 @@ Quokka language v1.1 beta
 - **Tipagem dinâmica** - não é necessário declarar tipos
 - **Interpretada** - execução direta do código fonte
 - **Orientada a blocos** - estrutura clara com chaves `{}`
-- **Sistema de entrada interativo** - comando `capture[]` integrado
+- **Sistema de entrada interativo** - comando `prompt()` integrada 
 - **Estruturas de dados nativas** - arrays e dicionários com sintaxe especial
 - **Funções de primeira classe** - suporte completo a funções definidas pelo usuário
 
@@ -46,11 +46,11 @@ Para projetos mais complexos, considere as limitações conhecidas e avalie se Q
 
 ### Atualizações
 
-A versão 1.1 comporta break/continue em funções de iteração while() e each()
+A versão 1.2 atualiza do zero o sistema de input do usuário e  sintaxe nova, com o comando `capture[]` substituído por prompt() com funções de tranformação de tipo
 
 ---
 
-***para mais informações, cheque a **Documentação oficial da Linguagem Quokka v1.1 beta***
+***para mais informações, cheque a **Documentação oficial da Linguagem Quokka v1.2***
 
 
  

@@ -1,6 +1,6 @@
 import sys
 from lexer import QuokkaLexer
-from interpreter import QuokkaInterpreter
+from int2 import QuokkaInterpreter
 
 if __name__ == "__main__":
     # Verifica se o usuário passou um argumento
