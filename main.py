@@ -19,9 +19,10 @@ if __name__ == "__main__":
 
     print("=== INTERPRETADOR QUOKKA ===")
     print(f"Executando '{arquivo_qk}'...\n")
-
-    # Cria o interpretador e executa
+    
+    # Cria o interpretador com debug
     interpreter = QuokkaInterpreter()
+    interpreter.enable_debug_mode()
     interpreter.interpret(code)
 
     print("\n=== EXECUÇÃO FINALIZADA ===") 

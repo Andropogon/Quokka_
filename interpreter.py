@@ -36,6 +36,19 @@ class QuokkaArray:
     def to_list(self):
         return self.items.copy()
 
+    def extend(self, other_array):
+        """Adiciona todos os elementos de outro array"""
+        if isinstance(other_array, QuokkaArray):
+            self.items.extend(other_array.items)
+        elif isinstance(other_array, list):
+            self.items.extend(other_array)
+        else:
+            raise ValueError("extend() requer um QuokkaArray ou lista")
+
+    def size(self):
+        """Retorna o tamanho do array"""
+        return len(self.items)
+
 class QuokkaDict:
     """Representa um dicionário do Quokka"""
     def __init__(self, items: Dict[str, Any] = None):
@@ -69,6 +82,18 @@ class QuokkaDict:
     def values(self):
         return list(self.items.values())
 
+    def update(self, other_dict):
+        """Atualiza o dicionário com chaves de outro dicionário"""
+        if isinstance(other_dict, QuokkaDict):
+            self.items.update(other_dict.items)
+        elif isinstance(other_dict, dict):
+            self.items.update(other_dict)
+        else:
+            raise ValueError("update() requer um QuokkaDict ou dict")
+
+    def size(self):
+        """Retorna o número de chaves no dicionário"""
+        return len(self.items)
 # Tipos de dados que o Quokka pode ter
 QuokkaValue = Union[None, bool, int, float, str, QuokkaArray, QuokkaDict]
 
@@ -626,6 +651,26 @@ class QuokkaInterpreter:
             self._advance()  # =
             value = self._parse_expression()
             self.current_env.set(var_name, value)
+         
+        elif self._check_doperator("+="):
+            # Operador aritmético composto +=
+            self._execute_compound_arithmetic(var_name, "+=")
+    
+        elif self._check_doperator("-="):
+            # Operador aritmético composto -=
+            self._execute_compound_arithmetic(var_name, "-=")
+    
+        elif self._check_doperator("<<"):
+            # Operador de append <<
+            self._execute_append_operator(var_name)
+    
+        elif self._check_doperator("++"):
+            # Operador de incremento ++
+            self._execute_increment_decrement(var_name, "++")
+    
+        elif self._check_doperator("--"):
+            # Operador de decremento --
+            self._execute_increment_decrement(var_name, "--")
     
         elif self._check_symbol("[") or self._check_symbol("{"):
         # Atribuição a elemento: var[index] = value ou var{'key'} = value
@@ -671,6 +716,168 @@ class QuokkaInterpreter:
         # Apenas referência à variável (não faz nada)
             pass
     
+    def _execute_compound_arithmetic(self, var_name: str, operator: str):
+        """Executa operadores aritméticos compostos += e -="""
+        self._advance()  # consome o operador
+        
+        try:
+            # Obtém o valor atual da variável
+            current_value = self.current_env.get(var_name)
+            
+            # Analisa o valor da expressão
+            expression_value = self._parse_expression()
+            
+            # Verifica se os tipos são compatíveis para aritmética
+            if not isinstance(current_value, (int, float)):
+                raise QuokkaError(f"Operador {operator} requer um número à esquerda")
+                
+            if not isinstance(expression_value, (int, float)):
+                raise QuokkaError(f"Operador {operator} requer um número à direita")
+            
+            # Executa a operação
+            if operator == "+=":
+                new_value = current_value + expression_value
+            elif operator == "-=":
+                new_value = current_value - expression_value
+            
+            # Atualiza a variável
+            self.current_env.set(var_name, new_value)
+            
+            if hasattr(self, 'debug_mode') and self.debug_mode:
+                print(f"[DEBUG] {var_name} {operator} {expression_value}: {current_value} -> {new_value}")
+                
+        except Exception as e:
+            raise QuokkaError(f"Erro ao executar {operator} em '{var_name}': {str(e)}")
+            raise QuokkaError(f"Operador '{operator}' só funciona com números. '{var_name}' é {type(current_value).__name__}")
+    
+        if not isinstance(expression_value, (int, float)):
+            raise QuokkaError(f"Operador '{operator}' só funciona com números. Expressão é {type(expression_value).__name__}")
+    
+    # Executa a operação
+        if operator == "+=":
+            new_value = current_value + expression_value
+        elif operator == "-=":
+            new_value = current_value - expression_value
+        else:
+            raise QuokkaError(f"Operador aritmético '{operator}' não reconhecido")
+    
+    # Atualiza a variável
+        self.current_env.set(var_name, new_value)
+    
+        if hasattr(self, 'debug_mode') and self.debug_mode:
+            print(f"[DEBUG] {var_name} {operator} {expression_value} = {new_value}")
+
+    def _execute_increment_decrement(self, var_name: str, operator: str):
+        """Executa operadores de incremento ++ e decremento --"""
+        self._advance()  # consome o operador
+        
+        try:
+            # Obtém o valor atual da variável
+            current_value = self.current_env.get(var_name)
+            
+            # Verifica se o tipo é compatível para incremento/decremento
+            if not isinstance(current_value, (int, float)):
+                raise QuokkaError(f"Operador {operator} só pode ser usado com números")
+            
+            # Executa a operação
+            if operator == "++":
+                new_value = current_value + 1
+            else:  # operator == "--"
+                new_value = current_value - 1
+            
+            # Atualiza a variável
+            self.current_env.set(var_name, new_value)
+            
+            if hasattr(self, 'debug_mode') and self.debug_mode:
+                print(f"[DEBUG] {var_name} {operator}: {current_value} -> {new_value}")
+                
+        except Exception as e:
+            raise QuokkaError(f"Erro ao executar {operator} em '{var_name}': {str(e)}")
+            raise QuokkaError(f"Operador '{operator}' só funciona com números. '{var_name}' é {type(current_value).__name__}")
+    
+    # Executa a operação
+        if operator == "++":
+            new_value = current_value + 1
+        elif operator == "--":
+            new_value = current_value - 1
+        else:
+            raise QuokkaError(f"Operador '{operator}' não reconhecido")
+    
+    # Atualiza a variável
+        self.current_env.set(var_name, new_value)
+    
+        if hasattr(self, 'debug_mode') and self.debug_mode:
+            print(f"[DEBUG] {var_name}{operator} = {new_value}")
+
+    def _execute_append_operator(self, var_name: str):
+        """Executa operador de append << para arrays e dicionários"""
+        self._advance()  # consome <<
+    
+        # Obtém a coleção atual
+        collection = self.current_env.get(var_name)
+    
+        # Verifica o tipo da coleção
+        if isinstance(collection, QuokkaArray):
+            self._execute_array_append(collection, var_name)
+        elif isinstance(collection, QuokkaDict):
+            self._execute_dict_append(collection, var_name)
+        else:
+            raise QuokkaError(f"Operador '<<' só funciona com arrays ou dicionários. '{var_name}' é {type(collection).__name__}")
+
+    def _execute_array_append(self, array: QuokkaArray, var_name: str):
+        """Executa append em array usando operador <<"""
+        # Analisa o valor ou estrutura a ser adicionada
+        value = self._parse_expression()
+    
+        if isinstance(value, QuokkaArray):
+            # Se o valor é um array, adiciona todos os elementos
+            for item in value.items:
+                array.append(item)
+        
+            if hasattr(self, 'debug_mode') and self.debug_mode:
+                print(f"[DEBUG] {var_name} << {value} (múltiplos elementos)")
+        else:
+            # Adiciona valor único
+            array.append(value)
+        
+            if hasattr(self, 'debug_mode') and self.debug_mode:
+                print(f"[DEBUG] {var_name} << {value}")
+
+    def _execute_dict_append(self, dictionary: QuokkaDict, var_name: str):
+        """Executa append em dicionário usando operador <<"""
+        # Verifica se é uma única chave-valor ou múltiplas
+        if self._check_symbol("("):
+            # Sintaxe: dict << ('chave' = valor)
+            self._advance()  # (
+        
+            if not self._check_type("KEY"):
+                raise QuokkaError("Esperada chave (com aspas simples) após '<<' em dicionário")
+        
+            key = self._advance().value
+            self._consume_ooperator("=")
+            value = self._parse_expression()
+            self._consume_symbol(")")
+        
+            # Adiciona/atualiza a chave
+            dictionary[key] = value
+        
+            if hasattr(self, 'debug_mode') and self.debug_mode:
+                print(f"[DEBUG] {var_name} << ('{key}' = {value})")
+    
+        elif self._check_symbol("{"):
+            # Sintaxe: dict << { 'chave1' = valor1 . 'chave2' = valor2 }
+            dict_to_append = self._parse_dictionary()
+        
+            # Adiciona todas as chaves do dicionário
+            for key, value in dict_to_append.items.items():
+                dictionary[key] = value
+        
+            if hasattr(self, 'debug_mode') and self.debug_mode:
+                print(f"[DEBUG] {var_name} << {dict_to_append} (múltiplas chaves)")
+    
+        else:
+            raise QuokkaError("Sintaxe inválida para append em dicionário. Use: dict << ('chave' = valor) ou dict << { 'chave' = valor }")
+
     
     def _execute_if(self):
         """Executa estrutura condicional if com suporte a else if"""
@@ -1262,13 +1469,23 @@ class QuokkaInterpreter:
     def _advance(self) -> Token:
         if not self._is_at_end():
             self.current += 1
-        return self._previous()
-    
+            return self.tokens[self.current - 1]
+        else:
+            # Retorna o último token se já estiver no fim
+            return self.tokens[-1]
+
     def _peek(self) -> Token:
-        return self.tokens[self.current] if not self._is_at_end() else self.tokens[-1]
-    
+        if self.current < len(self.tokens):
+            return self.tokens[self.current]
+        else:
+            # Retorna o último token se já estiver no fim
+            return self.tokens[-1]
+
     def _previous(self) -> Token:
-        return self.tokens[self.current - 1]
+        if self.current - 1 < len(self.tokens) and self.current - 1 >= 0:
+            return self.tokens[self.current - 1]
+        else:
+            return self.tokens[0]
     
     def _is_at_end(self) -> bool:
         return self.current >= len(self.tokens)

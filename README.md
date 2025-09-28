@@ -1,9 +1,8 @@
 # Quokka
-Quokka language v1.2
+Quokka language v1.3
 
-**Versão atual:** 1.2 
-**Versão do interpretador:** 7.0
-**Data:** Agosto 2025  
+**Versão atual:** 1.3
+**Data:** Setembro 2025  
 **Autores:** Lucas da Roza Cardoso 
 
 
@@ -46,11 +45,11 @@ Para projetos mais complexos, considere as limitações conhecidas e avalie se Q
 
 ### Atualizações
 
-A versão 1.2 atualiza do zero o sistema de input do usuário e  sintaxe nova, com o comando `capture[]` substituído por prompt() com funções de tranformação de tipo
+09/25 - A versão 1.3 Adiciona operadores de incremento de decremento (`++` e `--`), bem como operadoes compostos (`+=` e `-=`)
 
 ---
 
-***para mais informações, cheque a **Documentação oficial da Linguagem Quokka v1.2***
+***para mais informações, cheque a **Documentação oficial da Linguagem Quokka v1.3***
 
 
  

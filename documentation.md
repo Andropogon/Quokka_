@@ -1,4 +1,4 @@
-# Documentação Oficial da Linguagem Quokka V1.2
+# Documentação Oficial da Linguagem Quokka V1.3
 
 --- 
 
@@ -181,6 +181,8 @@ dados{'nome'} = "Pedro" # elemento 'nome' no dicionário 'dados' vale "Pedro"
 | `-` | Subtração | `10 - 4` |
 | `*` | Multiplicação | `6 * 7` |
 | `/` | Divisão | `15 / 3` |
+| `++` | Incremento | `2++` |
+| `--` | Decremento | `2--` |
 
 ### Operadores de Comparação
 
@@ -205,7 +207,9 @@ dados{'nome'} = "Pedro" # elemento 'nome' no dicionário 'dados' vale "Pedro"
 | Operador | Descrição | Exemplo |
 |----------|-----------|---------|
 | `=` | Atribuição | `x = 10` |
-
+| `+=` | Atribuição de adição | `x += 10` |
+| `-=` | Atribuição de subtração | `x -= 10` |
+| `<<` | Atribuição de item | `pessoa << ('cidade' = "São Paulo")` |
 ### Precedência de Operadores
 
 1. `()` - Parênteses
@@ -438,6 +442,7 @@ inexistente = numeros[10]  # null
 ```quokka
 numeros[0] = 100         # Modifica primeiro elemento
 numeros[5] = 60          # Adiciona novo elemento (expande array)
+numeros << 200           
 ```
 
 #### Iteração com each
