@@ -460,18 +460,36 @@ class QuokkaInterpreter:
         
         # Obtém a coleção
         collection = self.current_env.get(collection_name)
-        
-        # Verifica se é uma coleção válida
-        if not isinstance(collection, QuokkaArray):
-            raise QuokkaError(f"'{collection_name}' não é um array válido para iteração")
-        
-        # Executa o each para cada elemento
-        self._execute_each_iteration(
-            collection,
-            item_var_name,
-            each_start_token,
-            each_end_token
-        )
+
+        # Verifica o tipo da coleção
+        if isinstance(collection, QuokkaArray):
+        # Comportamento normal para arrays
+            self._execute_each_iteration(
+                collection,
+                item_var_name,
+                each_start_token,
+                each_end_token
+            )
+        elif isinstance(collection, QuokkaDict):
+            # 🆕 Itera sobre os valores do dicionário
+            values_array = QuokkaArray(list(collection.items.values()))
+            self._execute_each_iteration(
+                values_array,
+                item_var_name,
+                each_start_token,
+                each_end_token
+            )
+        elif isinstance(collection, str):
+            # 🆕 Converte string em array de caracteres
+            char_array = QuokkaArray([char for char in collection])
+            self._execute_each_iteration(
+                char_array,
+                item_var_name,
+                each_start_token,
+                each_end_token
+            )
+        else:
+            raise QuokkaError(f"'{collection_name}' não é um array ou string válido para iteração")
     
     def _execute_each_iteration(self, collection: QuokkaArray, item_var_name: str, start_token: int, end_token: int):
         """

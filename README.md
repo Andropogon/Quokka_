@@ -1,6 +1,6 @@
 # Quokka
 Quokka language v1.3
-
+***atualizar para 1.4 com novos tipos de iteração***
 **Versão atual:** 1.3
 **Data:** Setembro 2025  
 **Autores:** Lucas da Roza Cardoso 
