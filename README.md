@@ -1,7 +1,6 @@
 # Quokka
-Quokka language v1.3
-***atualizar para 1.4 com novos tipos de iteração***
-**Versão atual:** 1.3
+Quokka language v1.4
+**Versão atual:** 1.4
 **Data:** Setembro 2025  
 **Autores:** Lucas da Roza Cardoso 
 
@@ -45,11 +44,11 @@ Para projetos mais complexos, considere as limitações conhecidas e avalie se Q
 
 ### Atualizações
 
-09/25 - A versão 1.3 Adiciona operadores de incremento de decremento (`++` e `--`), bem como operadoes compostos (`+=` e `-=`)
+09/25 - A versão 1.4 Adiciona operadores de módulo e exponenciação, bem como possui suporte para iteração de dicionários e strings (caractere por caractere) além de arrays
 
 ---
 
-***para mais informações, cheque a **Documentação oficial da Linguagem Quokka v1.3***
+***para mais informações, cheque a **Documentação oficial da Linguagem Quokka v1.4***
 
 
  

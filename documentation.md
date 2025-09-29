@@ -1,4 +1,4 @@
-# Documentação Oficial da Linguagem Quokka V1.3
+# Documentação Oficial da Linguagem Quokka V1.4
 
 --- 
 
@@ -36,7 +36,7 @@ print("Hello World")  # Comentário no final da linha
 ### Convenções de Nomenclatura
 
 - **Variáveis:** *placeholder de valor mutável - letra minúscula* - `minhaVariavel`, `contador`, `nome_usuario`
-- **Funções:** `minhaFuncao`, `calcular.imc`, `processar_dados`
+- **Funções:** *comando definido pelo usuário que pode ser usado diversas vezes* `minhaFuncao`, `calcular.imc`, `processar_dados`
 - **Constantes:** *variável com valor definido que não se altera durante o código - letra maiúscula* - `VALOR_MAXIMO`, `PI`
 
 ### Delimitadores
@@ -84,6 +84,7 @@ resultado = "Idade: " + 25        # String + int = "Idade: 25"
 soma = 10 + 3.14                  # int + float = 13.14
 condicao = 0                      # 0 é considerado false
 ```
+variáveis booleanas nativamente aceitam inputs "1", "y", "s", "sim", "yes", "true" e "verdadeiro" como bool 1 e "0", "n", "não", "no", "false" e "falso" como bool 0
 
 ---
 
@@ -100,7 +101,7 @@ global{ # Declaração de variáveis globais
     configuracao = { 'debug' = true . 'versao' = "1.0" } # dicionário simples com duas chaves
 }
 ```
-As variáveis definidas no bloco global{} podem ser chamadas ao decorrer de todo o código
+As variáveis definidas no bloco global{} podem ser chamadas ao decorrer de todo o código. O bloco global{} não aceita qualquer outro tipo de comando
 
 ### 2. Definições de Função
 
@@ -111,6 +112,8 @@ fun minhaFuncao(parametro1, parametro2){
     yield(resultado)
 }
 ```
+Os parâmetros seram as variáveis/valores processados pela função
+yield() encerra a função e retorna o resultado de seu processamento.
 
 ### 3. Bloco Main
 
@@ -183,6 +186,8 @@ dados{'nome'} = "Pedro" # elemento 'nome' no dicionário 'dados' vale "Pedro"
 | `/` | Divisão | `15 / 3` |
 | `++` | Incremento | `2++` |
 | `--` | Decremento | `2--` |
+| `**` | Exponenciação | `2**3` |
+| `%` | Módulo | `10 % 3` |
 
 ### Operadores de Comparação
 
@@ -210,16 +215,18 @@ dados{'nome'} = "Pedro" # elemento 'nome' no dicionário 'dados' vale "Pedro"
 | `+=` | Atribuição de adição | `x += 10` |
 | `-=` | Atribuição de subtração | `x -= 10` |
 | `<<` | Atribuição de item | `pessoa << ('cidade' = "São Paulo")` |
+
 ### Precedência de Operadores
 
 1. `()` - Parênteses
-2. `*`, `/` - Multiplicação e divisão
-3. `+`, `-` - Adição e subtração
-4. `>`, `<`, `>=`, `<=` - Comparação
-5. `==`, `!=` - Igualdade
-6. `&&` - E lógico
-7. `||` - OU lógico
-8. `=` - Atribuição
+2. `**` - Exponenciação
+3. `*`, `/`, `%` - Multiplicação, divisão e módulo
+4. `+`, `-` - Adição e subtração
+5. `>`, `<`, `>=`, `<=` - Comparação
+6. `==`, `!=` - Igualdade
+7. `&&` - E lógico
+8. `||` - OU lógico
+9. `=` - Atribuição
 
 ---
 
@@ -271,7 +278,7 @@ else{
 contador = 0
 while(contador < 10){ # enquanto a condição for verdadeira, a intrução é executada
     print("Contador: " + contador)
-    contador = contador + 1
+    contador++
 }
 ```
 
@@ -287,7 +294,7 @@ each($numeros : numero){ # a variável 'numero' representa o elemento do array '
 
 ### Controle de Fluxo
 
-Quokka agora possui `break` e `continue` nativos. O uso de variáveis de controle:
+Quokka possui `break` e `continue` nativos. O uso de variáveis de controle:
 
 ```quokka
 # Em vez de break
@@ -299,7 +306,7 @@ while(continuar == true){
     }
 }
 ```
-Ainda é possível, mas pode ser substituído por:
+É possível, mas pode ser substituído por:
 
 ```quokka
 while(num > 0){
@@ -355,23 +362,6 @@ print("IMC: " + resultado)
 valor = somar(10, 20)
 ```
 
-### Parâmetros e Argumentos
-
-```quokka
-fun exemploParametros(obrigatorio, opcional){
-    if(opcional == null || opcional == 0){
-        obrigatório = "valor padrão"
-    }
-    
-    print("Obrigatório: " + obrigatorio)
-    print("Opcional: " + opcional)
-}
-
-# Chamadas
-exemploParametros("teste")           # opcional será null
-exemploParametros("teste", "extra")  # ambos definidos
-```
-
 ### Retorno de Valores
 
 ```quokka
@@ -385,7 +375,13 @@ fun comRetorno(x){
     yield(resultado)  # Retorno explícito do resultado
 }
 ```
-A função yield() deve ter como parâmetro a variável que será retornada como valor da função
+A função yield() deve ter como parâmetro o que será retornada como valor da função:
+
+```quokka
+fun comRetorno(x){
+    yield(x * 2)
+}
+```
 
 ### Escopo de Funções
 
@@ -442,7 +438,7 @@ inexistente = numeros[10]  # null
 ```quokka
 numeros[0] = 100         # Modifica primeiro elemento
 numeros[5] = 60          # Adiciona novo elemento (expande array)
-numeros << 200           
+numeros << 200           # Também adiciona novo elemento (expande array)
 ```
 
 #### Iteração com each
@@ -455,7 +451,7 @@ each($frutas : fruta){
 }
 ```
 
-### Dicionários (Mapas)
+### Dicionários
 
 #### Declaração e Inicialização
 
@@ -493,18 +489,16 @@ telefone = pessoa{'telefone'}  # null
 ```quokka
 pessoa{'nome'} = "Maria"          # Modifica valor existente
 pessoa{'telefone'} = "123456789"  # Adiciona nova chave
+pessoa << ( 'ID' = "24y7" )       # Também adiciona nova chave
 ```
 
-#### Iteração (Limitada)
+#### Iteração com each
 
 ```quokka
-# Quokka não possui iteração direta de dicionários
-# Use arrays de chaves se necessário
-
-chaves = { "nome" . "idade" . "cidade" }
-each($chaves : chave){
-    valor = pessoa{chave}
-    print(chave + ": " + valor)
+pessoa = { 'nome' = "João" . 'idade' = 18 }
+each($pessoa : dado){
+    valor = pessoa{dado}
+    print(dado + "=" + valor)
 }
 ```
 
@@ -692,7 +686,6 @@ main{
     # Lógica principal aqui
 }
 ```
-O escopo main ainda é global, como o do global{}, mas isso não impede o usuário de seguir as boas práticas de organização e declarar suas variáveis globais no bloco destinado a isso
 
 ### Validação de Entrada
 
@@ -750,51 +743,4 @@ fun acessarArray(array, indice){
 
 ### Funcionalidades Não Implementadas
 
-algumas funcionalidades ainda não foram implementadas. Porém, nenhuma apresenta criticidade significativa de prioridade, portanto o desenvolvimento seguirá focado em consertar e melhorar features já existentes.
-
-1. **Comandos de controle de fluxo:**
-   - `yield` múltiplo em funções
-
-2. **Estruturas avançadas:**
-   - `switch/case` ou equivalentes
-   - `for` ou equivalente tradicional
-   - `do-while` ou equivalentes
-
-3. **Tratamento de erros:**
-   - `try/catch/finally` ou equivalentes
-   - Lançamento customizado de exceções
-
-4. **Funcionalidades de sistema:**
-   - Manipulação de arquivos e comunicação externa
-   - Operações de rede
-   - Chamadas de sistema
-
-5. **Recursos avançados:**
-   - Classes e orientação a objetos
-   - Módulos e imports
-   - Bibliotecas externas
-
-### Workarounds
-
-```
-# Em vez de for, use while
-i = 0
-while(i < 10){
-    # corpo do loop
-    i = i + 1
-}
-
-# Em vez de múltiplos returns
-fun exemploReturn(valor){
-    resultado = null
-    
-    if(valor > 0){
-        resultado = "positivo"
-    }
-    else{
-        resultado = "não positivo"
-    }
-    
-    yield(resultado)  # Único return
-}
-```
+Algumas funcionalidades ainda não foram implementadas. Porém, nenhuma apresenta criticidade significativa de prioridade, portanto o desenvolvimento seguirá focado em consertar e melhorar features já existentes e em adicionar recursos básicos ainda não implementados.

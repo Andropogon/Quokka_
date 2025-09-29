@@ -27,7 +27,7 @@ SYMBOLS = {
     # Delimitadores
     "{", "}", "(", ")", "[", "]",
     # Operadores aritméticos
-    "+", "-", "*", "/", "+=", "-=", "<<", "++", "--",
+    "+", "-", "*", "/", "+=", "-=", "<<", "++", "--", "**", "%"
     # Operadores de comparação
     "==", "!=", ">=", "<=", ">", "<",
     # Operadores lógicos
@@ -42,11 +42,11 @@ TOKEN_PATTERNS = [
     (r'#.*', 'COMMENT'),                    # Comentários (se houver)
     (r'"(?:[^"\\]|\\.)*"', 'STRING'),       # Strings com aspas duplas
     (r"'(?:[^'\\]|\\.)*'", 'KEY'),          # Keys com aspas simples
-    (r'\d+\.\d+', 'FLOAT'),                 # Números decimais
-    (r'\d+', 'INT'),                        # Números inteiros
-    (r'==|!=|>=|<=|&&|\|\||\+\+|\-\-|\+=|\-=|<<', 'DOPERATOR'),   # Operadores de 2 caracteres
+    (r'-?\d+\.\d+', 'FLOAT'),                # Números decimais (incluindo negativos)
+    (r'-?\d+', 'INT'),                      # Números inteiros (incluindo negativos)
+    (r'==|!=|>=|<=|&&|\|\||\+\+|\-\-|\+=|\-=|<<|\*\*', 'DOPERATOR'),   # Operadores de 2 caracteres
     (r'[{}()\[\],]', 'SYMBOL'),             # Símbolos de 1 caractere
-    (r'[.=:+\-*/><!$]', 'OOPERATOR'),      # Operadores de 1 caractere
+    (r'[.=:+\-*/><!$%]', 'OOPERATOR'),      # Operadores de 1 caractere
     (r'[a-zA-Z_][a-zA-Z0-9_.]*', 'WORD'),  # Identificadores e palavras-chave
     (r'\s+', 'WHITESPACE'),                 # Espaços em branco
     (r'.', 'UNKNOWN')                       # Qualquer outro caractere

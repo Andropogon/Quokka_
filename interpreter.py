@@ -472,9 +472,9 @@ class QuokkaInterpreter:
             )
         elif isinstance(collection, QuokkaDict):
             # 🆕 Itera sobre os valores do dicionário
-            values_array = QuokkaArray(list(collection.items.values()))
+            keys_array = QuokkaDict(list(collection.items.keys()))
             self._execute_each_iteration(
-                values_array,
+                keys_array,
                 item_var_name,
                 each_start_token,
                 each_end_token
@@ -713,10 +713,12 @@ class QuokkaInterpreter:
             elif self._check_symbol("{"):
             # Dictionary access: var{'key'} = value
                 self._advance()  # {
-                if not self._check_type("KEY"):
-                    raise QuokkaError("Esperada chave (com aspas simples)")
-            
-                key = self._advance().value
+                key_expr = self._parse_expression()
+        
+                if isinstance(key_expr, str):
+                    key = key_expr
+                else:
+                    key = str(key_expr)
                 self._consume_symbol("}")
                 self._consume_ooperator("=")
                 value = self._parse_expression()
@@ -1184,19 +1186,42 @@ class QuokkaInterpreter:
     
     def _parse_multiplication(self) -> QuokkaValue:
         """Analisa operadores de multiplicação e divisão"""
-        expr = self._parse_primary()
+        expr = self._parse_exponentiation() 
         
-        while self._match_ooperators(["*", "/"]):
+        while self._match_ooperators(["*", "/", "%"]):
             ooperator = self._previous().value
-            right = self._parse_primary()
+            right = self._parse_exponentiation() 
             
             if ooperator == "*":
                 expr = expr * right
+            elif ooperator == "%":
+                if not isinstance(expr, int) or not isinstance(right, int):
+                    raise QuokkaError("Módulo só funciona com números inteiros")
+                if right == 0:
+                    raise QuokkaError("Divisão por zero no operador módulo")
+                expr = expr % right
             else:  
                 if right == 0:
                     raise QuokkaError("Divisão por zero")
                 expr = expr / right
         
+        return expr
+    
+    def _parse_exponentiation(self) -> QuokkaValue:
+        """Analisa operador de potenciação (right-associative)"""
+        expr = self._parse_primary()
+    
+        # ** é right-associative: 2**3**2 = 2**(3**2) = 512
+        if self._check_doperator("**"):
+            self._advance()
+            # Recursivo para ser right-associative
+            right = self._parse_exponentiation()
+        
+            if not isinstance(expr, (int, float)) or not isinstance(right, (int, float)):
+                raise QuokkaError("Potenciação só funciona com números")
+        
+            expr = expr ** right
+    
         return expr
     
     def _parse_data_structure(self) -> QuokkaValue:
@@ -1289,10 +1314,14 @@ class QuokkaInterpreter:
         elif self._check_symbol("{"):
             # Acesso a dicionário: obj{'key'}
             self._advance()  # {
-            if not self._check_type("KEY"):
-                raise QuokkaError("Esperada chave (com aspas simples) para acesso a dicionário")
-            
-            key = self._advance().value
+            key_expr = self._parse_expression()
+        
+            # Converte para string se necessário
+            if isinstance(key_expr, str):
+                key = key_expr
+            else:
+                key = str(key_expr)
+        
             self._consume_symbol("}")
             
             if isinstance(obj, QuokkaDict):
@@ -1311,6 +1340,9 @@ class QuokkaInterpreter:
             return float(self._advance().value)
     
         if self._check_type("STRING"):
+            return self._advance().value
+
+        if self._check_type("KEY"):
             return self._advance().value
     
         if self._check_keyword("true"):
