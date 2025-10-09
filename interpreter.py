@@ -173,6 +173,86 @@ class YieldException(Exception):
 
 class QuokkaInterpreter:
     """Interpretador principal do Quokka"""
+
+
+
+
+    def __init__(self, auto_load_libs=True):
+        self.lexer = QuokkaLexer()
+        self.tokens: List[Token] = []
+        self.current = 0
+        
+        # Ambientes de execução
+        self.global_env = Environment()
+        self.current_env = self.global_env
+        
+        # Armazena funções definidas pelo usuário
+        self.functions: Dict[str, 'FunctionDef'] = {}
+        
+        # Auto-carregar bibliotecas
+        if auto_load_libs:
+            self._load_standard_libraries()
+    
+    def _load_standard_libraries(self):
+        """Carrega bibliotecas padrão automaticamente"""
+        import os
+        
+        # Procura diretório libs/
+        libs_dir = "libs"
+        
+        if not os.path.exists(libs_dir):
+            print("⚠️  Diretório 'libs/' não encontrado - rodando sem bibliotecas")
+            return
+        
+        # Lista de bibliotecas a carregar (em ordem)
+        lib_files = ["collections.qk", "strings.qk", "math.qk"]
+        
+        for lib_file in lib_files:
+            lib_path = os.path.join(libs_dir, lib_file)
+            
+            if os.path.exists(lib_path):
+                try:
+                    print(f"\nTentando carregar: {lib_file}")
+                    print(f"Caminho completo: {lib_path}")
+                    self._load_library_file(lib_path)
+                    print(f"✅ Biblioteca carregada: {lib_file}")
+                    print(f"Funções disponíveis após carregar {lib_file}: {list(self.functions.keys())}")
+                except Exception as e:
+                    print(f"❌ Erro ao carregar {lib_file}: {e}")
+            else:
+                print(f"⚠️  Biblioteca não encontrada: {lib_file}")
+    
+    def _load_library_file(self, filepath: str):
+        """Carrega um arquivo de biblioteca Quokka"""
+        print(f"Carregando biblioteca: {filepath}")
+        # Lê o arquivo
+        with open(filepath, 'r', encoding='utf-8') as f:
+            lib_code = f.read()
+            print(f"Conteúdo lido: {len(lib_code)} caracteres")
+        
+        # Salva estado atual do interpretador
+        old_tokens = self.tokens
+        old_current = self.current
+        
+        try:
+            # Tokeniza a biblioteca
+            self.tokens = self.lexer.tokenize(lib_code)
+            self.current = 0
+            
+            # Processa apenas funções (ignora global/main se houver)
+            while not self._is_at_end():
+                if self._check_keyword("fun"):
+                    self._parse_function()
+                else:
+                    self._advance()
+            
+        finally:
+            # Restaura estado do interpretador
+            self.tokens = old_tokens
+            self.current = old_current
+
+
+
     def _execute_with_local_scope(self, execution_func, context="local"):
         """
     Executa uma função com escopo local temporário
@@ -213,17 +293,7 @@ class QuokkaInterpreter:
             for name, value in vars_dict.items():
                 print(f"  {name} = {self._quokka_to_string(value)}")
             print()
-    def __init__(self):
-        self.lexer = QuokkaLexer()
-        self.tokens: List[Token] = []
-        self.current = 0
-        
-        # Ambientes de execução
-        self.global_env = Environment()
-        self.current_env = self.global_env
-        
-        # Armazena funções definidas pelo usuário
-        self.functions: Dict[str, 'FunctionDef'] = {}
+
     
     def interpret(self, code: str):
         """Interpreta um código Quokka completo"""

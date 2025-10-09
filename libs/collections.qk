@@ -1,0 +1,66 @@
+
+fun len(colecao) {
+    contador = 0
+    each($colecao : i) {
+        contador++
+    }
+    yield(contador)
+}
+
+fun sum(array) {
+    total = 0
+    each($array : num) {
+        total = total + num
+    }
+    yield(total)
+}
+
+fun max(array) {
+    maior = array[0]
+    each($array : num) {
+        if(num > maior) {
+            maior = num
+        }
+    }
+    yield(maior)
+}
+
+fun min(array) {
+    menor = array[0]
+    each($array : num) {
+        if(num < menor) {
+            menor = num
+        }
+    }
+    yield(menor)
+}
+
+fun reverse(array) {
+    tamanho = len(array)
+    resultado = { }
+    indice = tamanho - 1
+    while(indice >= 0) {
+        resultado << array[indice]
+        indice--
+    }
+    yield(resultado)
+}
+
+fun contains(colecao, busca) {
+    each($colecao : item) {
+        if(item == busca) {
+            yield(true)
+        }
+    }
+    yield(false)
+}
+
+fun range(inicio, fim) {
+    resultado = { }
+    i = inicio
+    while(i <= fim) {
+        resultado << i
+        i++
+    }
+    yield(resultado)
+}

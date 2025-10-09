@@ -1,0 +1,56 @@
+
+fun split(texto, sep) {
+    resultado = { }
+    buffer = ""
+    each($texto : c) {
+        if(c == sep) {
+            if(buffer != "") {
+                resultado << buffer
+            }
+            buffer = ""
+        } else {
+            buffer = buffer + c
+        }
+    }
+    if(buffer != "") {
+        resultado << buffer
+    }
+    yield(resultado)
+}
+
+fun join(array, sep) {
+    resultado = ""
+    tamanho = len(array)
+    contador = 0
+    each($array : item) {
+        resultado = resultado + item
+        contador++
+        if(contador < tamanho) {
+            resultado = resultado + sep
+        }
+    }
+    yield(resultado)
+}
+
+fun chars(texto) {
+    resultado = { }
+    each($texto : c) {
+        resultado << c
+    }
+    yield(resultado)
+}
+
+fun uppercase(texto) {
+    resultado = ""
+    each($texto : c) {
+        // ASCII: a-z = 97-122, A-Z = 65-90
+        // Diferença = 32
+        if(c == "a") { resultado = resultado + "A" }
+        else if(c == "b") { resultado = resultado + "B" }
+        else if(c == "c") { resultado = resultado + "C" }
+        else if(c == "d") { resultado = resultado + "D" }
+        else if(c == "e") { resultado = resultado + "E" }
+        else { resultado = resultado + c }
+    }
+    yield(resultado)
+}

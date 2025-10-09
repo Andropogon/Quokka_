@@ -1,0 +1,61 @@
+main{
+fun abs(num) {
+    if(num < 0) {
+        yield(num * -1)
+    }
+    yield(num)
+}
+
+fun round(num) {
+    if(num >= 0) {
+        yield(to_int(num + 0.5)
+    } else {
+        yield(to_int(num - 0.5))
+    }
+}
+
+while(contador < 10){
+    if(num + 0)
+}
+
+
+
+fun floor(num) {
+    yield(to_int(num))
+}
+
+fun ceil(num) {
+    inteiro = to_int(num)
+    if(num > to_float(inteiro)) {
+        yield(inteiro + 1)
+    }
+    yield(inteiro)
+}
+
+fun sqrt(num) {
+    yield(num ** 0.5)
+}
+
+fun pow(base, exp) {
+    yield(base ** exp)
+}
+
+fun factorial(n) {
+    if(n <= 1) {
+        yield(1)
+    }
+    resultado = 1
+    i = 2
+    while(i <= n) {
+        resultado = resultado * i
+        i++
+    }
+    yield(resultado)
+}
+
+fun avg(array) {
+    total = sum(array)
+    quantidade = len(array)
+    yield(total / quantidade)
+}
+}
