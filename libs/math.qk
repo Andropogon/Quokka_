@@ -1,4 +1,4 @@
-main{
+
 fun abs(num) {
     if(num < 0) {
         yield(num * -1)
@@ -6,22 +6,16 @@ fun abs(num) {
     yield(num)
 }
 
-fun round(num) {
-    if(num >= 0) {
-        yield(to_int(num + 0.5)
-    } else {
-        yield(to_int(num - 0.5))
-    }
-}
-
-while(contador < 10){
-    if(num + 0)
-}
-
-
-
 fun floor(num) {
     yield(to_int(num))
+}
+
+fun round(num) {
+    if(num > 0){
+        yield(to_int(num + 0.5))
+    }else{
+        yield(to_int(num - 0.5))
+    }
 }
 
 fun ceil(num) {
@@ -58,4 +52,15 @@ fun avg(array) {
     quantidade = len(array)
     yield(total / quantidade)
 }
+
+fun cos(){
+
+}
+
+fun sen(){
+
+}
+
+fun tg(){
+    
 }

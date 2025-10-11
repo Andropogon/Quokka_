@@ -18,11 +18,11 @@ fun split(texto, sep) {
     yield(resultado)
 }
 
-fun join(array, sep) {
+fun join(texto, sep) {
     resultado = ""
-    tamanho = len(array)
+    tamanho = len(texto)
     contador = 0
-    each($array : item) {
+    each($texto : item) {
         resultado = resultado + item
         contador++
         if(contador < tamanho) {
@@ -43,13 +43,21 @@ fun chars(texto) {
 fun uppercase(texto) {
     resultado = ""
     each($texto : c) {
-        // ASCII: a-z = 97-122, A-Z = 65-90
-        // Diferença = 32
+        # ASCII: a-z = 97-122, A-Z = 65-90
+        # Diferença = 32
         if(c == "a") { resultado = resultado + "A" }
         else if(c == "b") { resultado = resultado + "B" }
         else if(c == "c") { resultado = resultado + "C" }
         else if(c == "d") { resultado = resultado + "D" }
         else if(c == "e") { resultado = resultado + "E" }
+        else if(c == "f") { resultado = resultado + "F" }
+        else if(c == "g") { resultado = resultado + "G" }
+        else if(c == "h") { resultado = resultado + "H" }
+        else if(c == "i") { resultado = resultado + "I" }
+        else if(c == "j") { resultado = resultado + "J" }
+        else if(c == "k") { resultado = resultado + "K" }
+        else if(c == "l") { resultado = resultado + "L" }
+        else if(c == "m") { resultado = resultado + "M" }
         else { resultado = resultado + c }
     }
     yield(resultado)

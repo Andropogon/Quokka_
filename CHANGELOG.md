@@ -2,6 +2,7 @@
 
 ## Prioridade
 - I/O e sistema de arquivos
+- Expansão de bibliotecas
 
 ## [1.4] - 2025-09-29
 ### Adicionado

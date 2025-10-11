@@ -1,14 +1,13 @@
 # escreva aqui o seu código Quokka. 
 # para executar este arquivo, digite no terminal: python main.py teste.qk
 # se desejar, crie um arquivo novo para outros testes e o execute com: python main.py (seu arquivo).qk
-global {
-    numeros = { 5 . 2 . 8 . 1 . 9 . 3 }
-    texto = "Quokka eh muito legal"
-    palavras = { "Olá" . "mundo" . "Quokka" }
+import{
+    "math"
+}
+global{
+    array = { 'nome' = "lk" . 'idade' = 16 }
 }
 
-main {
-    decimal = 3.7
-    arredondado = round(decimal)
-    print("Round(3.7): " + arredondado)
+main{
+    print(keys(array))
 }

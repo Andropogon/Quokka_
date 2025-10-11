@@ -64,3 +64,30 @@ fun range(inicio, fim) {
     }
     yield(resultado)
 }
+
+fun merge(array1, array2) {
+    resultado = { }
+    each($array1 : a){
+        resultado << a
+    }
+    each($array2 : b){
+        resultado << b
+    }
+    yield(resultado)
+}
+
+fun keys(dict){
+    resultado = { }
+    each($dict : i){
+        resultado << i
+    }
+    yield(resultado)
+}
+
+fun values(dict){
+    resultado = { }
+    each($dict : i){
+        resultado << dict{i}
+    }
+    yield(resultado)
+}

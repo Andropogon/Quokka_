@@ -22,7 +22,7 @@ if __name__ == "__main__":
     
     # Cria o interpretador com debug
     interpreter = QuokkaInterpreter()
-    interpreter.enable_debug_mode()
+    #interpreter.enable_debug_mode()
     interpreter.interpret(code)
 
     print("\n=== EXECUÇÃO FINALIZADA ===") 

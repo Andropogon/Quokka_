@@ -12,7 +12,7 @@ class Token(NamedTuple):
 # Palavras-chave do Quokka 
 KEYWORDS = {
     # Estruturas principais
-    "global", "main", "fun",
+    "import", "global", "main", "fun",
     # Controle de fluxo
     "if", "else", "while", "each", "break", "continue", "exit",
     # Valores especiais
